@@ -1,0 +1,118 @@
+[versions]
+android-gradle-plugin = "8.2.2"
+kotlin-android = "1.9.0"
+hilt-plugin = "2.49"
+
+junit = "4.13.2"
+test-ext = "1.1.5"
+espresso-core = "3.5.1"
+
+# AndroidX
+core-ktx-version = "1.12.0"
+androidx-core-ktx = "1.7.3"
+lifecycle-runtime-ktx = "2.7.0"
+activity-compose = "1.8.2"
+compose-bom = "2024.01.00"
+compose-navigation = "2.7.6"
+compose-lifecycle = "2.7.0"
+compose_material = "1.1.2"
+
+#Retrofit
+squareup-retrofit = "2.9.0"
+squareup-gson = "2.1.0"
+
+# Hilt
+dagger-hilt = "2.49"
+navigation-hilt = "1.1.0"
+navigation-compose-hilt = "1.1.0"
+androidx-compiler-hilt = "1.1.0"
+dagger-compiler-hilt = "2.49"
+
+# Room
+androidx-room = "2.6.1"
+# Glide
+github-glide = "4.12.0"
+
+[libraries]
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx-version" }
+androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle-runtime-ktx" }
+org-core-ktx = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "androidx-core-ktx" }
+
+#Retrofit
+retrofit2 = {group = "com.squareup.retrofit2", name = "retrofit", version.ref = "squareup-retrofit"}
+gson = {group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "squareup-gson"}
+
+#Compose
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose" }
+compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
+compose-ui = { group = "androidx.compose.ui", name = "ui" }
+compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+
+material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "compose_material" }
+
+compose-navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref = "compose-navigation" }
+compose-lifecycle = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "compose-lifecycle" }
+
+compose-ui-test = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+
+
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+test-ext = { group = "androidx.test.ext", name = "junit", version.ref = "test-ext" }
+espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
+
+
+
+
+#Hilt
+dagger-hilt = { group = "com.google.dagger", name = "hilt-android", version.ref = "dagger-hilt" }
+navigation-hilt = { group = "androidx.hilt", name = "hilt-navigation-fragment", version.ref = "navigation-hilt" }
+navigation-compose-hilt = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "navigation-compose-hilt" }
+
+androidx-compiler-hilt = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "androidx-compiler-hilt" }
+dagger-compiler-hilt = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "dagger-compiler-hilt" }
+
+#RoomDB
+androidx-room-runtime = { group = "androidx.room", name = "room-runtime",version.ref ="androidx-room" }
+androidx-room-compiler = { group = "androidx.room", name = "room-compiler",version.ref ="androidx-room" }
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx",version.ref ="androidx-room" }
+
+#Glide
+github-glide = { group = "com.github.bumptech.glide", name = "glide",version.ref = "github-glide" }
+github-glide-compiler = { group = "com.github.bumptech.glide", name = "compiler",version.ref ="github-glide" }
+
+
+[plugins]
+com-android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
+org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-android" }
+com-google-dagger-hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt-plugin" }
+
+[bundles]
+androidx-compose = [
+    "compose-ui",
+    "compose-ui-graphics",
+    "compose-ui-tooling-preview",
+    "compose-navigation",
+    "compose-lifecycle",
+    "compose-bom",
+    "androidx-activity-compose",
+    "material3"
+]
+androidx-hilt-impl = [
+    "dagger-hilt",
+    "navigation-hilt",
+    "navigation-compose-hilt"
+]
+androidx-hilt-kapt = [
+    "androidx-compiler-hilt",
+    "dagger-compiler-hilt"
+]
+androidx-room = [
+    "androidx-room-runtime",
+    "androidx-room-ktx"
+]
+retrofit = [
+    "retrofit2",
+    "gson"
+]
