@@ -31,7 +31,7 @@ fun FeedScreen(
     Scaffold(
         bottomBar = {
             BottomNavigation(navController = navController)
-        }
+        }sds
     ) {
 
     }
