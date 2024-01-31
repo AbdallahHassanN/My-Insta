@@ -3,10 +3,14 @@ package com.example.navapp
 sealed class Screens(val route:String) {
     object MainScreen : Screens("mainScreen")
     object RegisterScreen : Screens("RegisterScreen")
-    object FeedScreen : Screens("FeedScreen")
     object ForgotPasswordScreen : Screens("ForgotPasswordScreen")
     object ChangePasswordScreen : Screens("ChangePasswordScreen")
-    object SettingsScreen : Screens("SettingsScreen")
+    object FeedScreen : Screens("FeedScreen")
+    object ProfileScreen : Screens("ProfileScreen")
     object SearchScreen : Screens("SearchScreen")
+    object AddPostScreen : Screens("AddPostScreen")
+    object SettingsScreen : Screens("SettingsScreen")
+
+
 
 }

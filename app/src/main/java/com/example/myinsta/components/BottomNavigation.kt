@@ -1,12 +1,14 @@
 package com.example.myinsta.components
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.AccountCircle
+import androidx.compose.material.icons.outlined.AddCircle
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -29,7 +31,7 @@ fun BottomNavigation(
             title = "Home",
             selectedItem = Icons.Filled.Home,
             unSelectedIcon = Icons.Outlined.Home,
-            route = Screens.MainScreen.route
+            route = Screens.FeedScreen.route
         ),
         BottomNavigationItem(
             title = "Search",
@@ -38,11 +40,17 @@ fun BottomNavigation(
             route = Screens.SearchScreen.route
         ),
         BottomNavigationItem(
-            title = "Settings",
-            selectedItem = Icons.Filled.Settings,
-            unSelectedIcon = Icons.Outlined.Settings,
-            route = Screens.SettingsScreen.route
-        )
+            title = "Add Post",
+            selectedItem = Icons.Filled.AddCircle,
+            unSelectedIcon = Icons.Outlined.AddCircle,
+            route = Screens.AddPostScreen.route
+        ),
+        BottomNavigationItem(
+            title = "Profile",
+            selectedItem = Icons.Filled.AccountCircle,
+            unSelectedIcon = Icons.Outlined.AccountCircle,
+            route = Screens.ProfileScreen.route
+        ),
     )
     var selectedItemIndex by rememberSaveable {
         mutableStateOf(0)
