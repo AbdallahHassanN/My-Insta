@@ -1,5 +1,6 @@
 package com.example.myinsta.components
 
+import android.util.Log
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.AddCircle
@@ -15,10 +16,12 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavController
+import com.example.myinsta.common.Constants.TAG
 import com.example.myinsta.models.BottomNavigationItem
 import com.example.navapp.Screens
 
@@ -53,7 +56,7 @@ fun BottomNavigation(
         ),
     )
     var selectedItemIndex by rememberSaveable {
-        mutableStateOf(0)
+        mutableIntStateOf(0)
     }
     NavigationBar {
         items.forEachIndexed { index, Item ->
@@ -62,6 +65,7 @@ fun BottomNavigation(
                 onClick = {
                     selectedItemIndex = index
                     navController.navigate(Item.route)
+                    Log.d(TAG,Item.route)
                 },
                 label = {
                     Text(text = Item.title)

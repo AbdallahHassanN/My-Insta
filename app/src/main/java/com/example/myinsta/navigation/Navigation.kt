@@ -4,14 +4,15 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.myinsta.presentation.SettingsScreen.SettingsScreen
+import com.example.myinsta.presentation.settingsScreen.changeNameScreen.ChangeNameScreen
+import com.example.myinsta.presentation.settingsScreen.changeNameScreen.ChangeUsernameScreen
+import com.example.myinsta.presentation.settingsScreen.SettingsScreen
 import com.example.myinsta.presentation.addPostScreen.AddPostScreen
 import com.example.myinsta.presentation.changePasswordScreen.ChangePasswordScreen
 import com.example.myinsta.presentation.feedScreen.FeedScreen
 import com.example.myinsta.presentation.forgotPasswordScreen.ForgotPasswordScreen
 import com.example.myinsta.presentation.mainScreen.MainScreen
 import com.example.myinsta.presentation.profileScreen.ProfileScreen
-import com.example.myinsta.presentation.profileScreen.components.ProfileStates
 import com.example.myinsta.presentation.registerScreen.RegisterScreen
 import com.example.myinsta.presentation.searchScreen.SearchScreen
 
@@ -41,13 +42,16 @@ fun Navigation() {
             ProfileScreen(navController = navController)
         }
         composable(route = Screens.AddPostScreen.route) {
-            /*TODO*/
             AddPostScreen(navController = navController)
         }
         composable(route = Screens.SettingsScreen.route) {
-            /*TODO*/
             SettingsScreen(navController = navController)
         }
-
+        composable(route = Screens.ChangeNameScreen.route) {
+            ChangeNameScreen(navController = navController)
+        }
+        composable(route = Screens.ChangeUsernameScreen.route) {
+            ChangeUsernameScreen(navController = navController)
+        }
     }
 }

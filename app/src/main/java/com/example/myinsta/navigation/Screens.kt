@@ -10,7 +10,8 @@ sealed class Screens(val route:String) {
     object SearchScreen : Screens("SearchScreen")
     object AddPostScreen : Screens("AddPostScreen")
     object SettingsScreen : Screens("SettingsScreen")
-
-
+    object ChangeNameScreen : Screens("ChangeNameScreen")
+    object ChangeUsernameScreen : Screens("ChangeUsernameScreen")
+    object ChangeProfilePictureScreen : Screens("ChangeProfilePictureScreen")
 
 }
