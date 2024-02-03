@@ -29,7 +29,7 @@ fun RoundedImageView(
         painter = image,
         contentDescription = null, // Provide a meaningful description
         modifier = Modifier
-            .size(75.dp)
+            .size(50.dp)
             .clip(CircleShape), // Adjust the corner radius as needed
         contentScale = ContentScale.Crop
     )
