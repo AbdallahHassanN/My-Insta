@@ -23,6 +23,7 @@ import com.example.myinsta.components.LogoImage
 import com.example.myinsta.components.MyButton
 import com.example.myinsta.components.PasswordTextField
 import com.example.myinsta.components.UsernameOrEmailTextField
+import com.example.myinsta.ui.theme.QuickSandTypography
 import com.example.navapp.Screens
 
 @Composable
@@ -45,7 +46,8 @@ fun ForgotPasswordScreen(navController: NavController) {
         ) {
             Text(
                 text = "Trouble Signing in ?",
-                fontSize = 20.sp
+                fontSize = 20.sp,
+                style = QuickSandTypography.labelLarge
             )
         }
 

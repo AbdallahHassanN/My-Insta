@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.myinsta.ui.theme.QuickSandTypography
 
 @Composable
 fun MyButton(
@@ -33,9 +34,11 @@ fun MyButton(
             modifier = Modifier
                 .fillMaxWidth(),
             colors = ButtonDefaults
-                .buttonColors(containerColor = Color.Blue) // Set your desired background color
+                .buttonColors(containerColor = Color.Blue), // Set your desired background color
         ) {
-            Text(text = text)
+            Text(text = text,
+                style = QuickSandTypography.displayMedium
+            )
         }
     }
 }

@@ -40,6 +40,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.myinsta.R
 import com.example.myinsta.presentation.settingsScreen.SettingsScreen
+import com.example.myinsta.ui.theme.QuickSandTypography
 import com.example.navapp.Screens
 
 @Composable
@@ -61,11 +62,12 @@ fun TopBar(navController: NavController){
                     fontSize = 20.sp,
                     modifier = Modifier
                         .padding(10.dp)
-                        .fillMaxWidth(0.75F)
+                        .fillMaxWidth(0.75F),
+                    style = QuickSandTypography.titleLarge
                 )
 
                 IconButton(onClick = {
-                    /*TODO Fav Screen */
+                   navController.navigate(Screens.NotificationScreen.route)
                 },
                     ) {
                     Icon(imageVector = Icons.Filled.FavoriteBorder,
@@ -73,7 +75,7 @@ fun TopBar(navController: NavController){
                         tint = Color.Black)
                 }
                 IconButton(onClick = {
-                    /*TODO Chat Screen */
+                    navController.navigate(Screens.ChatScreen.route)
                 },
                 ) {
                     Icon(imageVector = Icons.Filled.MailOutline,

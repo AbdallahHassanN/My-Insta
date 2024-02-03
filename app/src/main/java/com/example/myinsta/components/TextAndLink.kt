@@ -11,14 +11,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.myinsta.ui.theme.QuickSandTypography
 import com.example.navapp.Screens
 
 @Composable
 fun TextAndLink(
     onClick: () -> Unit,
-    text:String,
-    link:String
-){
+    text: String,
+    link: String
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -29,12 +30,15 @@ fun TextAndLink(
             ),
         horizontalArrangement = Arrangement.Center
     ) {
-        Text(text = text)
-
+        Text(
+            text = text,
+            style = QuickSandTypography.labelLarge
+        )
         Text(
             text = link,
             color = Color.Blue,
-            modifier = Modifier.clickable {onClick()}
+            modifier = Modifier.clickable { onClick() },
+            style = QuickSandTypography.labelLarge
         )
     }
 }

@@ -15,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.myinsta.ui.theme.QuickSandTypography
 
 @Composable
 fun ProfileStates(
@@ -33,12 +34,13 @@ fun ProfileStates(
     ) {
         Text(text = text,
             fontWeight = FontWeight.Bold,
-            fontSize = 20.sp,
-            color = Color.Black
+            color = Color.Black,
+            style = QuickSandTypography.headlineMedium
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(text = numberText,
-            color = Color.Black
+            color = Color.Black,
+            style = QuickSandTypography.headlineMedium
         )
     }
 }

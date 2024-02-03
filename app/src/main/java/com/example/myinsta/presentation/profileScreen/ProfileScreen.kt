@@ -44,6 +44,7 @@ import com.example.myinsta.components.LogoImage
 import com.example.myinsta.presentation.profileScreen.components.ProfileStates
 import com.example.myinsta.presentation.profileScreen.components.RoundedImageView
 import com.example.myinsta.presentation.registerScreen.RegisterScreen
+import com.example.myinsta.ui.theme.QuickSandTypography
 import com.example.navapp.Screens
 
 @Composable
@@ -64,7 +65,8 @@ fun ProfileScreen(
                 fontSize = 20.sp,
                 modifier = Modifier
                     .padding(10.dp)
-                    .fillMaxWidth(0.8F)
+                    .fillMaxWidth(0.8F),
+                style = QuickSandTypography.headlineMedium
             )
             Icon(
                 imageVector = Icons.Rounded.AddCircle,
@@ -121,13 +123,14 @@ fun ProfileScreen(
             Text(
                 text = "Account Name",
                 fontWeight = FontWeight.Bold,
-                fontSize = 20.sp,
-                color = Color.Black
+                color = Color.Black,
+                style = QuickSandTypography.headlineMedium
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = "Bio",
-                color = Color.Black
+                color = Color.Black,
+                style = QuickSandTypography.headlineSmall
             )
         }
         CustomDivider()

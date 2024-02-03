@@ -11,3 +11,5 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 val BigStone = Color(238,247,254,255)
+val StoryColor1 = Color(233,129,34,255)
+val StoryColor2 = Color(210,5,98,255)

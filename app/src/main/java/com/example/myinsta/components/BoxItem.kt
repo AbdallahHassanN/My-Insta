@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.myinsta.ui.theme.QuickSandTypography
 
 @Composable
 fun BoxItem(
@@ -36,7 +37,8 @@ fun BoxItem(
         Text(
             text = text,
             color = Color.Black,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            style = QuickSandTypography.bodyLarge
         )
         Icon(
             imageVector = Icons.Outlined.ArrowForward,

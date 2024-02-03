@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.sp
 import com.example.myinsta.components.ChangeInfoTextField
 import com.example.myinsta.components.MyButton
 import com.example.myinsta.ui.theme.BigStone
+import com.example.myinsta.ui.theme.QuickSandTypography
 
 @Composable
 fun ChangeNameInfo(
@@ -34,7 +35,8 @@ fun ChangeNameInfo(
             fontSize = 20.sp,
             color = Color.Black,
             modifier = Modifier
-                .padding(20.dp)
+                .padding(20.dp),
+            style = QuickSandTypography.headlineMedium
         )
         ChangeInfoTextField(label = labelText, query = text)
         Column(

@@ -34,6 +34,7 @@ import com.example.myinsta.common.pickFromGallery
 import com.example.myinsta.components.BoxItem
 import com.example.myinsta.presentation.profileScreen.components.RoundedImageView
 import com.example.myinsta.ui.theme.BigStone
+import com.example.myinsta.ui.theme.QuickSandTypography
 import com.example.navapp.Screens
 
 @Composable
@@ -76,7 +77,9 @@ fun SettingsScreen(
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp,
                 color = Color.Black,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                style = QuickSandTypography.headlineLarge
+
             )
         }
         Row(
@@ -91,7 +94,8 @@ fun SettingsScreen(
                 fontWeight = FontWeight.Bold,
                 fontSize = 15.sp,
                 color = Color.Gray,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                style = QuickSandTypography.labelSmall
             )
         }
         Box(

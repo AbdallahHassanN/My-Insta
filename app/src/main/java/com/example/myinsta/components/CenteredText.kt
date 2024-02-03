@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.myinsta.ui.theme.QuickSandTypography
 import com.example.navapp.Screens
 
 @Composable
@@ -41,7 +42,8 @@ fun CenteredText(
                 .clickable(
                     interactionSource = interactionSource,
                     indication = remember { null }
-                ) { onClick() }
+                ) { onClick() },
+            style = QuickSandTypography.labelLarge
         )
     }
 }
