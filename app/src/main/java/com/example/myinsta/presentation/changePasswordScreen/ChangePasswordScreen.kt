@@ -24,7 +24,7 @@ import com.example.navapp.Screens
 
 @Composable
 fun ChangePasswordScreen(navController: NavController){
-    Column(
+    /*Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(top = 50.dp)
@@ -38,7 +38,7 @@ fun ChangePasswordScreen(navController: NavController){
                 navController.navigate(Screens.MainScreen.route)
             }
         )
-    }
+    }*/
 }
 
 @Preview(showBackground = true)

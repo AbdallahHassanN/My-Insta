@@ -24,13 +24,20 @@ import androidx.compose.ui.unit.dp
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun UsernameOrEmailTextField(
-    label:String
+    label:String,
+    inputValue:String,
+    onQueryChanged: (String) -> Unit,
+    isError:Boolean
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
-    var usernameOrEmail by remember { mutableStateOf("") }
+    //var usernameOrEmail by remember { mutableStateOf("") }
     TextField(
-        value = usernameOrEmail,
-        onValueChange = { newValue -> usernameOrEmail = newValue },
+        value = inputValue,
+        onValueChange =
+        {
+            newValue ->
+            onQueryChanged(newValue)
+        },
         Modifier
             .fillMaxWidth()
             .padding(
@@ -41,6 +48,7 @@ fun UsernameOrEmailTextField(
         label = {
             Text(text = label)
         },
+        isError = isError,
         keyboardOptions = KeyboardOptions.Default.copy(
             keyboardType = KeyboardType.Text,
             imeAction = ImeAction.Done,

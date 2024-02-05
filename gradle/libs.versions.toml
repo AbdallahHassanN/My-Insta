@@ -2,7 +2,9 @@
 android-gradle-plugin = "8.2.2"
 kotlin-android = "1.9.0"
 hilt-plugin = "2.49"
+google-firebase = "4.4.0"
 
+firebase-ver = "32.7.1"
 junit = "4.13.2"
 test-ext = "1.1.5"
 espresso-core = "3.5.1"
@@ -32,6 +34,7 @@ dagger-compiler-hilt = "2.49"
 androidx-room = "2.6.1"
 # Glide
 github-glide = "4.12.0"
+firebase-auth-ktx = "22.3.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx-version" }
@@ -81,11 +84,16 @@ androidx-room-ktx = { group = "androidx.room", name = "room-ktx",version.ref ="a
 github-glide = { group = "com.github.bumptech.glide", name = "glide",version.ref = "github-glide" }
 github-glide-compiler = { group = "com.github.bumptech.glide", name = "compiler",version.ref ="github-glide" }
 
+# Firebase
+com-google-firebase ={group = "com.google.firebase",name ="firebase-bom",version.ref = "firebase-ver"}
+com-firebase-analytics = {group = "com.google.firebase",name = "firebase-analytics"}
+firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebase-auth-ktx" }
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
 org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-android" }
 com-google-dagger-hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt-plugin" }
+com-google-gms-google-services = {id = "com.google.gms.google-services",version.ref = "google-firebase"}
 
 [bundles]
 androidx-compose = [
@@ -114,4 +122,8 @@ androidx-room = [
 retrofit = [
     "retrofit2",
     "gson"
+]
+firebase = [
+    "com-firebase-analytics",
+    "firebase-auth-ktx"
 ]

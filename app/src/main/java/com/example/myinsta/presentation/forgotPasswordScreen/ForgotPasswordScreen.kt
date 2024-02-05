@@ -28,7 +28,7 @@ import com.example.navapp.Screens
 
 @Composable
 fun ForgotPasswordScreen(navController: NavController) {
-    Column(
+    /*Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(top = 50.dp)
@@ -80,7 +80,7 @@ fun ForgotPasswordScreen(navController: NavController) {
             },
             size = 20.sp
         )
-    }
+    }*/
 }
 
 @Preview(showBackground = true)

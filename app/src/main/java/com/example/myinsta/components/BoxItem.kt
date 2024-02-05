@@ -21,7 +21,8 @@ import com.example.myinsta.ui.theme.QuickSandTypography
 @Composable
 fun BoxItem(
     text: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    color: Color
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     Row(
@@ -36,14 +37,14 @@ fun BoxItem(
     ) {
         Text(
             text = text,
-            color = Color.Black,
+            color = color,
             modifier = Modifier.weight(1f),
             style = QuickSandTypography.bodyLarge
         )
         Icon(
             imageVector = Icons.Outlined.ArrowForward,
             contentDescription = null,
-            tint = Color.Black,
+            tint = color,
             modifier = Modifier.size(24.dp)
         )
     }

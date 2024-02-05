@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.org.jetbrains.kotlin.android)
     kotlin("kapt")
     alias(libs.plugins.com.google.dagger.hilt.android)
+    //id("com.google.gms.google-services")
+    alias(libs.plugins.com.google.gms.google.services)
 }
 
 android {
@@ -79,4 +81,9 @@ dependencies {
 
     implementation(libs.github.glide)
     annotationProcessor(libs.github.glide.compiler)
+
+    implementation(platform(libs.com.google.firebase))
+    implementation(libs.bundles.firebase)
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
+
 }

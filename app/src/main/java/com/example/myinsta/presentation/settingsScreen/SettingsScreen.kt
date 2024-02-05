@@ -26,12 +26,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.myinsta.R
 import com.example.myinsta.common.Constants.TAG
 import com.example.myinsta.common.pickFromGallery
 import com.example.myinsta.components.BoxItem
+import com.example.myinsta.presentation.mainScreen.MainScreenViewModel
 import com.example.myinsta.presentation.profileScreen.components.RoundedImageView
 import com.example.myinsta.ui.theme.BigStone
 import com.example.myinsta.ui.theme.QuickSandTypography
@@ -41,6 +43,16 @@ import com.example.navapp.Screens
 fun SettingsScreen(
     navController: NavController
 ) {
+    val viewModel: MainScreenViewModel = hiltViewModel()
+
+    val onLogoutClick: () -> Unit = {
+        viewModel.logout()
+        navController.navigate(Screens.MainScreen.route) {
+            popUpTo(navController.graph.id) {
+                inclusive = false
+            }
+        }
+    }
     val getContent = rememberLauncherForActivityResult(
         contract = ActivityResultContracts
             .GetContent()
@@ -119,17 +131,29 @@ fun SettingsScreen(
                     text = "Name",
                     onClick = {
                         navController.navigate(Screens.ChangeNameScreen.route)
-                    }
+                    },
+                    color = Color.Black
                 )
-                BoxItem(text = "Username",
+                BoxItem(
+                    text = "Username",
                     onClick = {
                         navController.navigate(Screens.ChangeUsernameScreen.route)
-                    }
+                    },
+                    color = Color.Black
                 )
-                BoxItem(text = "Profile Picture",
+                BoxItem(
+                    text = "Profile Picture",
                     onClick = {
                         pickFromGallery(getContent)
-                    }
+                    },
+                    color = Color.Black
+                )
+                BoxItem(
+                    text = "Logout",
+                    onClick = {
+                        onLogoutClick()
+                    },
+                    color = Color.Red
                 )
             }
         }

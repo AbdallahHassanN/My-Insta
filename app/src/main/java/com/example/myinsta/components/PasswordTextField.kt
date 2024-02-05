@@ -30,15 +30,21 @@ import com.example.myinsta.R
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun PasswordTextField(
-    label:String
+    label: String,
+    inputValue: String,
+    onQueryChanged: (String) -> Unit,
+    isError: Boolean
 ) {
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
     val keyboardController = LocalSoftwareKeyboardController.current
-    var password by remember { mutableStateOf("") }
+    //var password by remember { mutableStateOf("") }
 
     TextField(
-        value = password,
-        onValueChange = { newValue -> password = newValue },
+        value = inputValue,
+        onValueChange =
+        { newValue ->
+            onQueryChanged(newValue)
+        },
         Modifier
             .fillMaxWidth()
             .padding(
@@ -49,6 +55,7 @@ fun PasswordTextField(
         label = {
             Text(text = label)
         },
+        isError = isError,
         keyboardOptions = KeyboardOptions.Default.copy(
             keyboardType = KeyboardType.Password,
             imeAction = ImeAction.Done,
