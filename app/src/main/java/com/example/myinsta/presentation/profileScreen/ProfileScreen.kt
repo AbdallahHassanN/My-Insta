@@ -14,13 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.grid.itemsIndexed
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.outlined.AddCircle
-import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.AddCircle
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.Icon
@@ -28,7 +22,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -40,10 +33,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.myinsta.R
 import com.example.myinsta.components.CustomDivider
-import com.example.myinsta.components.LogoImage
 import com.example.myinsta.presentation.profileScreen.components.ProfileStates
 import com.example.myinsta.presentation.profileScreen.components.RoundedImageView
-import com.example.myinsta.presentation.registerScreen.RegisterScreen
 import com.example.myinsta.ui.theme.QuickSandTypography
 import com.example.navapp.Screens
 
@@ -137,7 +128,7 @@ fun ProfileScreen(
         LazyVerticalGrid(
             columns = GridCells.Fixed(3)
         ) {
-            items(25) { index ->
+            items(25) {
                 Image(
                     painter = painterResource(id = R.drawable.hakari),
                     contentDescription = null,

@@ -4,9 +4,7 @@ import com.example.myinsta.common.await
 import com.example.myinsta.response.Resource
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import javax.inject.Inject
@@ -27,11 +25,18 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override suspend fun register(
-        name: String,
         email: String,
-        password: String
-    ): Resource<FirebaseUser> {
-        TODO("Not yet implemented")
+        password: String,
+        username:String
+    ):  Flow<Resource<FirebaseUser>>  {
+        return try {
+            val response = firebaseAuth
+                .createUserWithEmailAndPassword(email, password)
+                .await()
+            flowOf(Resource.Success(response.user!!))
+        } catch (e: Exception) {
+            flowOf(Resource.Error("An unexpected error occurred"))
+        }
     }
 
     override suspend fun logout(): Flow<Resource<Boolean>>

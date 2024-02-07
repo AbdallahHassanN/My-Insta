@@ -1,7 +1,6 @@
 package com.example.myinsta.presentation.mainScreen
 
 import android.util.Log
-import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -53,15 +52,15 @@ class MainScreenViewModel @Inject constructor(
                 }
         }
     }
-
     fun logout() = viewModelScope.launch {
         firebaseLogoutUseCase.execute()
             .collect {
             when (it) {
                 is Resource.Error -> {
+                    Log.d(TAG,"Logout Failed")
                 }
-
                 is Resource.Loading -> {
+                    Log.d(TAG,"Logout Loading")
                 }
                 is Resource.Success -> {
                     _signInState.value = null

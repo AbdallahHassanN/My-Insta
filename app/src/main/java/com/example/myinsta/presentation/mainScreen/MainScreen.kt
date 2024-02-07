@@ -25,6 +25,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.myinsta.R
+import com.example.myinsta.common.Constants
 import com.example.myinsta.common.Constants.TAG
 import com.example.myinsta.components.CenteredText
 import com.example.myinsta.components.LogoImage
@@ -34,7 +35,6 @@ import com.example.myinsta.components.TextAndLink
 import com.example.myinsta.components.UsernameOrEmailTextField
 import com.example.myinsta.response.Resource
 import com.example.navapp.Screens
-import com.google.common.graph.Graphs
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
@@ -49,14 +49,16 @@ fun MainScreen(navController: NavController) {
         when (it) {
             is Resource.Error -> {
                 LaunchedEffect(Unit) {
-                    showMessage(context,"Invalid email or password")
+                    showMessage(context, "Invalid email or password")
                 }
             }
+
             is Resource.Loading -> {
                 LaunchedEffect(Unit) {
                     Log.d(TAG, "Loading")
                 }
             }
+
             is Resource.Success -> {
                 LaunchedEffect(Unit) {
                     navController.navigate(Screens.FeedScreen.route) {
@@ -64,7 +66,10 @@ fun MainScreen(navController: NavController) {
                     }
                 }
             }
-            else -> {}
+
+            else -> {
+                Log.d(Constants.TAG, "Unexpected Error")
+            }
         }
     }
 
@@ -116,6 +121,7 @@ fun DisplayMainScreen() {
     val navController = rememberNavController()
     MainScreen(navController = navController)
 }
-fun showMessage(context: Context, message:String){
+
+fun showMessage(context: Context, message: String) {
     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 }
