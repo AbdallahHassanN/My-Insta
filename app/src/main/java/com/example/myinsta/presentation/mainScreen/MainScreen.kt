@@ -52,13 +52,11 @@ fun MainScreen(navController: NavController) {
                     showMessage(context, "Invalid email or password")
                 }
             }
-
             is Resource.Loading -> {
                 LaunchedEffect(Unit) {
                     Log.d(TAG, "Loading")
                 }
             }
-
             is Resource.Success -> {
                 LaunchedEffect(Unit) {
                     navController.navigate(Screens.FeedScreen.route) {
@@ -66,9 +64,8 @@ fun MainScreen(navController: NavController) {
                     }
                 }
             }
-
             else -> {
-                Log.d(Constants.TAG, "Unexpected Error")
+                Log.d(TAG, "Unexpected Error")
             }
         }
     }
