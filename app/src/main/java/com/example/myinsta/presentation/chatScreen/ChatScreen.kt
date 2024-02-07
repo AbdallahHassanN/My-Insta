@@ -1,24 +1,17 @@
 package com.example.myinsta.presentation.chatScreen
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myinsta.components.ChatItem
-import com.example.myinsta.components.NotificationItem
-import com.example.myinsta.components.PostOnFeed
-import com.example.myinsta.components.SearchAppBar
-import com.example.myinsta.components.UnseenStoryIcon
 import com.example.myinsta.ui.theme.QuickSandTypography
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")

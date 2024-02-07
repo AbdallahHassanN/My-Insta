@@ -17,7 +17,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavController
@@ -59,21 +58,21 @@ fun BottomNavigation(
         mutableIntStateOf(0)
     }
     NavigationBar {
-        items.forEachIndexed { index, Item ->
+        items.forEachIndexed { index, item ->
             NavigationBarItem(
                 selected = selectedItemIndex == index,
                 onClick = {
                     selectedItemIndex = index
-                    navController.navigate(Item.route)
-                    Log.d(TAG,Item.route)
+                    navController.navigate(item.route)
+                    Log.d(TAG,item.route)
                 },
                 label = {
-                    Text(text = Item.title)
+                    Text(text = item.title)
                 },
                 icon = {
                     Icon(
-                        imageVector = if (index == selectedItemIndex) Item.selectedItem else Item.unSelectedIcon,
-                        contentDescription = Item.title
+                        imageVector = if (index == selectedItemIndex) item.selectedItem else item.unSelectedIcon,
+                        contentDescription = item.title
                     )
                 }
             )
