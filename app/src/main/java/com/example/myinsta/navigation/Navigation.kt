@@ -9,7 +9,6 @@ import com.example.myinsta.presentation.settingsScreen.changeNameScreen.ChangeNa
 import com.example.myinsta.presentation.settingsScreen.changeNameScreen.ChangeUsernameScreen
 import com.example.myinsta.presentation.settingsScreen.SettingsScreen
 import com.example.myinsta.presentation.addPostScreen.AddPostScreen
-import com.example.myinsta.presentation.changePasswordScreen.ChangePasswordScreen
 import com.example.myinsta.presentation.feedScreen.FeedScreen
 import com.example.myinsta.presentation.forgotPasswordScreen.ForgotPasswordScreen
 import com.example.myinsta.presentation.mainScreen.MainScreen
@@ -30,9 +29,6 @@ fun Navigation() {
         }
         composable(route = Screens.ForgotPasswordScreen.route) {
             ForgotPasswordScreen(navController = navController)
-        }
-        composable(route = Screens.ChangePasswordScreen.route) {
-            ChangePasswordScreen(navController = navController)
         }
         composable(route = Screens.FeedScreen.route) {
             FeedScreen(navController = navController)

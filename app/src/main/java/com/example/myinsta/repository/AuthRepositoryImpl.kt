@@ -121,4 +121,23 @@ class AuthRepositoryImpl @Inject constructor(
             }
         }
     }
+    override fun getUserId(): FirebaseUser? {
+        return firebaseAuth.currentUser
+    }
+
+    override fun getUserInfo(userId: String)
+    : Flow<Resource<User?>> = callbackFlow {
+        val snapshotListener = fireStore.collection(COLLECTION_NAME)
+            .document(userId).addSnapshotListener { snapshot, e ->
+                if (snapshot != null) {
+                    val user = snapshot.toObject(User::class.java)
+                    trySend(Resource.Success(user))
+                } else {
+                    trySend(Resource.Error(e?.message ?: ERROR))
+                }
+            }
+        awaitClose {
+            snapshotListener.remove()
+        }
+    }
 }
