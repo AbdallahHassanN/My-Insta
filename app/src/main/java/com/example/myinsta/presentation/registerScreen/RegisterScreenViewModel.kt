@@ -39,23 +39,24 @@ class RegisterScreenViewModel @Inject constructor(
     val emailValidation = mutableStateOf<ValidateResult?>(null)
     val passwordValidation = mutableStateOf<ValidateResult?>(null)
     val usernameValidation = mutableStateOf<ValidateResult?>(null)
-    val FullNameValidation = mutableStateOf<ValidateResult?>(null)
+    val fullNameValidation = mutableStateOf<ValidateResult?>(null)
 
     fun register() = viewModelScope.launch {
         emailValidation.value = validateEmail()
-        FullNameValidation.value = validateFullName()
+        fullNameValidation.value = validateFullName()
         passwordValidation.value = validatePassword()
         usernameValidation.value = validateUsername()
 
         if (emailValidation.value!!.isSuccess &&
             passwordValidation.value!!.isSuccess &&
-            FullNameValidation.value!!.isSuccess
+            fullNameValidation.value!!.isSuccess
         ) {
             _registerState.value = Resource.Loading(true)
             firebaseRegisterUseCase.execute(
                 email = _email.value.trim(),
                 password = _password.value.trim(),
-                username = _username.value.trim()
+                username = _username.value.trim(),
+                fullName = _fullName.value.trim()
             ).collect {
                 _registerState.value = it
                 Log.d(TAG, "View Model state value ${_registerState.value}")

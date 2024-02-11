@@ -27,6 +27,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.myinsta.R
 import com.example.myinsta.common.Constants
 import com.example.myinsta.common.Constants.TAG
+import com.example.myinsta.common.showToastMessage
 import com.example.myinsta.components.CenteredText
 import com.example.myinsta.components.LogoImage
 import com.example.myinsta.components.MyButton
@@ -49,7 +50,7 @@ fun MainScreen(navController: NavController) {
         when (it) {
             is Resource.Error -> {
                 LaunchedEffect(Unit) {
-                    showMessage(context, "Invalid email or password")
+                    showToastMessage(context, "Invalid email or password")
                 }
             }
             is Resource.Loading -> {
@@ -117,8 +118,4 @@ fun MainScreen(navController: NavController) {
 fun DisplayMainScreen() {
     val navController = rememberNavController()
     MainScreen(navController = navController)
-}
-
-fun showMessage(context: Context, message: String) {
-    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 }
