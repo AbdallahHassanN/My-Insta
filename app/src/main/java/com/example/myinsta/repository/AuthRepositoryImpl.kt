@@ -77,7 +77,7 @@ class AuthRepositoryImpl @Inject constructor(
                                 trySend(
                                     Resource.Error(
                                         message = it.localizedMessage
-                                            ?: "An unexpected error occurred"
+                                            ?: ERROR
                                     )
                                 )
                             }
@@ -85,7 +85,7 @@ class AuthRepositoryImpl @Inject constructor(
                         trySend(
                             Resource.Error(
                                 message = it.localizedMessage
-                                    ?: "An unexpected error occurred"
+                                    ?: ERROR
                             )
                         )
                     }
@@ -94,12 +94,12 @@ class AuthRepositoryImpl @Inject constructor(
                 trySend(
                     Resource.Error(
                         message = it.localizedMessage
-                            ?: "An unexpected error occurred"
+                            ?: ERROR
                     )
                 )
             }
         } catch (e: Exception) {
-            trySend(Resource.Error(message = e.localizedMessage ?: "An unexpected error occurred"))
+            trySend(Resource.Error(message = e.localizedMessage ?: ERROR))
         }
         awaitClose()
     }
@@ -110,7 +110,7 @@ class AuthRepositoryImpl @Inject constructor(
             firebaseAuth.signOut()
             emit(Resource.Success(true))
         } catch (e: Exception) {
-            emit(Resource.Error(message = e.localizedMessage ?: "UNKNOWN_ERROR_OCCURRED"))
+            emit(Resource.Error(message = e.localizedMessage ?: ERROR))
         }
     }
 
