@@ -12,9 +12,9 @@ class FirebaseRegisterUseCase @Inject constructor(
     private val repo: AuthRepository
 ) {
     suspend fun execute(
-        email: String, password: String,username:String
+        email: String, password: String,username:String,fullName:String
     ) = repo
-        .register(email,password,username).flatMapConcat {
+        .register(email,password,username,fullName).flatMapConcat {
         when (it) {
             is Resource.Error -> {
                 Log.d(Constants.TAG, "UseCase Error ? ${it.message.toString()}")

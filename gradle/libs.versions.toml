@@ -88,6 +88,7 @@ github-glide-compiler = { group = "com.github.bumptech.glide", name = "compiler"
 com-google-firebase ={group = "com.google.firebase",name ="firebase-bom",version.ref = "firebase-ver"}
 com-firebase-analytics = {group = "com.google.firebase",name = "firebase-analytics"}
 firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebase-auth-ktx" }
+firestore = {group = "com.google.firebase",name="firebase-firestore"}
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
@@ -125,5 +126,6 @@ retrofit = [
 ]
 firebase = [
     "com-firebase-analytics",
-    "firebase-auth-ktx"
+    "firebase-auth-ktx",
+    "firestore"
 ]

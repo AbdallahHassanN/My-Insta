@@ -21,14 +21,13 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.myinsta.R
 import com.example.myinsta.common.Constants
+import com.example.myinsta.common.showToastMessage
 import com.example.myinsta.components.CenteredText
 import com.example.myinsta.components.LogoImage
 import com.example.myinsta.components.MyButton
 import com.example.myinsta.components.PasswordTextField
 import com.example.myinsta.components.TextAndLink
 import com.example.myinsta.components.UsernameOrEmailTextField
-import com.example.myinsta.presentation.mainScreen.MainScreenViewModel
-import com.example.myinsta.presentation.mainScreen.showMessage
 import com.example.myinsta.response.Resource
 import com.example.navapp.Screens
 
@@ -47,7 +46,8 @@ fun RegisterScreen(navController: NavController) {
         when (it) {
             is Resource.Error -> {
                 LaunchedEffect(Unit) {
-                    showMessage(context,"Invalid data")
+                    val error = it.message
+                    showToastMessage(context,error.toString())
                 }
             }
             is Resource.Loading -> {
@@ -86,7 +86,7 @@ fun RegisterScreen(navController: NavController) {
             label = "Enter Full Name",
             inputValue = fullNameValue,
             onQueryChanged = {viewModel.onFullNameChanged(it)},
-            isError = viewModel.FullNameValidation.value?.isSuccess?.not() ?: false,
+            isError = viewModel.fullNameValidation.value?.isSuccess?.not() ?: false,
         )
         UsernameOrEmailTextField(
             label = "Enter Username",
