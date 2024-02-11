@@ -1,5 +1,6 @@
 package com.example.myinsta.presentation.profileScreen
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -20,6 +21,8 @@ import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,10 +32,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.myinsta.R
+import com.example.myinsta.common.Constants
+import com.example.myinsta.common.Constants.TAG
 import com.example.myinsta.components.CustomDivider
+import com.example.myinsta.presentation.feedScreen.FeedScreenViewModel
 import com.example.myinsta.presentation.profileScreen.components.ProfileStates
 import com.example.myinsta.presentation.profileScreen.components.RoundedImageView
 import com.example.myinsta.ui.theme.QuickSandTypography
@@ -42,6 +50,30 @@ import com.example.navapp.Screens
 fun ProfileScreen(
     navController: NavController
 ) {
+    val viewModel: ProfileScreenViewModel = hiltViewModel()
+    val userId by viewModel.userId.collectAsStateWithLifecycle()
+    val userInfo by viewModel.userInfo.collectAsStateWithLifecycle()
+    var username : String = ""
+    var fullName : String = ""
+    var bio : String = ""
+    var followers : Int = 0
+    var following : Int = 0
+    var posts : Int = 0
+
+
+    LaunchedEffect(key1 = userId, block = {
+        viewModel.getUserInfo(userId)
+    })
+    if (userInfo != null) {
+        username = userInfo!!.username
+        fullName = userInfo!!.fullName
+        bio = userInfo!!.bio
+        followers = userInfo!!.followers
+        following = userInfo!!.following
+        posts = userInfo!!.totalPosts
+    } else {
+        // Handle the case when userInfo is null, maybe show a loading indicator
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -51,7 +83,7 @@ fun ProfileScreen(
                 .fillMaxWidth()
         ) {
             Text(
-                text = "UserName",
+                text = username,
                 color = Color.Black,
                 fontSize = 20.sp,
                 modifier = Modifier
@@ -93,15 +125,15 @@ fun ProfileScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 ProfileStates(
-                    numberText = "5",
+                    numberText = posts.toString(),
                     text = "Posts"
                 ) {}
                 ProfileStates(
-                    numberText = "5",
+                    numberText = followers.toString(),
                     text = "Followers"
                 ) {}
                 ProfileStates(
-                    numberText = "5",
+                    numberText = following.toString(),
                     text = "Following"
                 ) {}
             }
@@ -112,14 +144,14 @@ fun ProfileScreen(
                 .padding(start = 10.dp)
         ) {
             Text(
-                text = "Account Name",
+                text = fullName,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black,
                 style = QuickSandTypography.headlineMedium
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "Bio",
+                text = bio,
                 color = Color.Black,
                 style = QuickSandTypography.headlineSmall
             )

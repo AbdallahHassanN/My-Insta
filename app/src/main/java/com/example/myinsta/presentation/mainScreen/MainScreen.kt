@@ -108,11 +108,6 @@ fun MainScreen(navController: NavController) {
         CenteredText(
             text = "OR", color = Color.Gray, onClick = {}, size = 20.sp
         )
-        CenteredText(
-            text = "Forgot Password ?", color = Color.Black, onClick = {
-                navController.navigate(Screens.ForgotPasswordScreen.route)
-            }, size = 20.sp
-        )
         TextAndLink(
             onClick = {
                 navController.navigate(Screens.RegisterScreen.route)

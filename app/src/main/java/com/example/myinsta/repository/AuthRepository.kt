@@ -1,5 +1,6 @@
 package com.example.myinsta.repository
 
+import com.example.myinsta.models.User
 import com.example.myinsta.response.Resource
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.flow.Flow
@@ -13,4 +14,7 @@ interface AuthRepository {
     suspend fun logout()
             : Flow<Resource<Boolean>>
     fun verifyEmail()
+    fun getUserId(): FirebaseUser?
+    fun getUserInfo(userId: String): Flow<Resource<User?>>
+
 }
