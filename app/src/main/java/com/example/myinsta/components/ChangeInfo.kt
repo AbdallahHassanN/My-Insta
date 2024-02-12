@@ -12,8 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.myinsta.components.ChangeInfoTextField
-import com.example.myinsta.components.MyButton
+
 import com.example.myinsta.ui.theme.BigStone
 import com.example.myinsta.ui.theme.QuickSandTypography
 
@@ -22,7 +21,8 @@ fun ChangeNameInfo(
     pageText:String,
     labelText:String,
     text:String,
-    onClick:() -> Unit
+    onClick:() -> Unit,
+    onTextChanged: (String) -> Unit, // New lambda parameter for text change callback
 ) {
     Column(
         Modifier
@@ -38,7 +38,7 @@ fun ChangeNameInfo(
                 .padding(20.dp),
             style = QuickSandTypography.headlineMedium
         )
-        ChangeInfoTextField(label = labelText, query = text)
+        ChangeInfoTextField(label = labelText, query = text,onTextChanged = onTextChanged)
         Column(
             Modifier
                 .fillMaxSize(),

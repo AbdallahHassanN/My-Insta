@@ -10,7 +10,6 @@ import com.example.myinsta.common.validator.EmailValidator
 import com.example.myinsta.common.validator.EmptyValidator
 import com.example.myinsta.common.validator.ValidateResult
 import com.example.myinsta.response.Resource
-import com.example.myinsta.useCases.FirebaseLogoutUseCase
 import com.example.myinsta.useCases.FirebaseSignInUseCase
 import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,11 +22,10 @@ import javax.inject.Inject
 @HiltViewModel
 class MainScreenViewModel @Inject constructor(
     private val firebaseSignInUseCase: FirebaseSignInUseCase,
-    private val firebaseLogoutUseCase: FirebaseLogoutUseCase,
-    ) : ViewModel() {
+) : ViewModel() {
 
     private val _signInState = MutableStateFlow<Resource<FirebaseUser>?>(null)
-    val signInState : StateFlow<Resource<FirebaseUser>?> = _signInState
+    val signInState: StateFlow<Resource<FirebaseUser>?> = _signInState
 
     private val _email = MutableStateFlow("")
     val email = _email.asStateFlow()
@@ -47,31 +45,15 @@ class MainScreenViewModel @Inject constructor(
             firebaseSignInUseCase.execute(
                 email = _email.value.trim(), password = _password.value.trim()
             ).collect {
-                    _signInState.value = it
-                Log.d(TAG,"View Model value ${_signInState.value}")
-                }
-        }
-    }
-    fun logout() = viewModelScope.launch {
-        firebaseLogoutUseCase.execute()
-            .collect {
-            when (it) {
-                is Resource.Error -> {
-                    Log.d(TAG,"Logout Failed")
-                }
-                is Resource.Loading -> {
-                    Log.d(TAG,"Logout Loading")
-                }
-                is Resource.Success -> {
-                    _signInState.value = null
-                }
+                _signInState.value = it
+                Log.d(TAG, "View Model value ${_signInState.value}")
             }
-
         }
     }
+
     private fun validateEmail() = BaseValidator.validate(
-            EmptyValidator(_email.value), EmailValidator(_email.value.trim())
-        )
+        EmptyValidator(_email.value), EmailValidator(_email.value.trim())
+    )
 
     private fun validatePassword() = EmptyValidator(_password.value).validate()
 

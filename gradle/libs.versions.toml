@@ -89,6 +89,7 @@ com-google-firebase ={group = "com.google.firebase",name ="firebase-bom",version
 com-firebase-analytics = {group = "com.google.firebase",name = "firebase-analytics"}
 firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebase-auth-ktx" }
 firestore = {group = "com.google.firebase",name="firebase-firestore"}
+storage = {group="com.google.firebase",name ="firebase-storage"}
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
@@ -127,5 +128,6 @@ retrofit = [
 firebase = [
     "com-firebase-analytics",
     "firebase-auth-ktx",
-    "firestore"
+    "firestore",
+    "storage"
 ]

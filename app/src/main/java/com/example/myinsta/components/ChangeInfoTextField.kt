@@ -19,21 +19,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ChangeInfoTextField(
     label: String,
-    query: String
+    query: String,
+    onTextChanged: (String) -> Unit
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
-    val newInfo = remember { mutableStateOf(query) }
+    var newInfo by remember { mutableStateOf(query) }
     TextField(
-        value = newInfo.value,
-        onValueChange = { newValue ->
-            newInfo.value = newValue
+        value = newInfo,
+        onValueChange = {  newInfo = it
+            onTextChanged(it)
         },
         Modifier
             .fillMaxWidth()
@@ -68,9 +68,4 @@ fun ChangeInfoTextField(
             unfocusedLabelColor = Color.Gray,
         ),
     )
-}
-@Preview(showBackground = true)
-@Composable
-fun DisplayInfoTF(){
-    ChangeInfoTextField(label = "ASD", query = "ASD")
 }

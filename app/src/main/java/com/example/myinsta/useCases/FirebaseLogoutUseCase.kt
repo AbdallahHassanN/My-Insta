@@ -1,6 +1,6 @@
 package com.example.myinsta.useCases
 
-import com.example.myinsta.repository.AuthRepository
+import com.example.myinsta.repository.authRepo.AuthRepository
 import javax.inject.Inject
 
 class FirebaseLogoutUseCase @Inject constructor(

@@ -16,6 +16,7 @@ import com.example.myinsta.presentation.notificationScreen.NotificationScreen
 import com.example.myinsta.presentation.profileScreen.ProfileScreen
 import com.example.myinsta.presentation.registerScreen.RegisterScreen
 import com.example.myinsta.presentation.searchScreen.SearchScreen
+import com.example.myinsta.presentation.settingsScreen.changeBioScreen.ChangeBioScreen
 
 @Composable
 fun Navigation() {
@@ -50,6 +51,9 @@ fun Navigation() {
         }
         composable(route = Screens.ChangeUsernameScreen.route) {
             ChangeUsernameScreen(navController = navController)
+        }
+        composable(route = Screens.ChangeBioScreen.route) {
+            ChangeBioScreen(navController = navController)
         }
         composable(route = Screens.NotificationScreen.route) {
             NotificationScreen(navController = navController)

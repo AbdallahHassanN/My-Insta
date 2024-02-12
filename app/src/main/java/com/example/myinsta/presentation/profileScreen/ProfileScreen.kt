@@ -37,10 +37,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.myinsta.R
-import com.example.myinsta.common.Constants
 import com.example.myinsta.common.Constants.TAG
 import com.example.myinsta.components.CustomDivider
-import com.example.myinsta.presentation.feedScreen.FeedScreenViewModel
 import com.example.myinsta.presentation.profileScreen.components.ProfileStates
 import com.example.myinsta.presentation.profileScreen.components.RoundedImageView
 import com.example.myinsta.ui.theme.QuickSandTypography
@@ -56,6 +54,7 @@ fun ProfileScreen(
     var username : String = ""
     var fullName : String = ""
     var bio : String = ""
+    var img : String = ""
     var followers : Int = 0
     var following : Int = 0
     var posts : Int = 0
@@ -71,8 +70,7 @@ fun ProfileScreen(
         followers = userInfo!!.followers
         following = userInfo!!.following
         posts = userInfo!!.totalPosts
-    } else {
-        // Handle the case when userInfo is null, maybe show a loading indicator
+        img = userInfo!!.imageUrl
     }
     Column(
         modifier = Modifier
@@ -118,7 +116,8 @@ fun ProfileScreen(
                 .fillMaxWidth()
                 .padding(10.dp)
         ) {
-            RoundedImageView(painterResource(id = R.drawable.hakari))
+            RoundedImageView(img)
+            Log.d(TAG, "HH$img")
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceAround,
