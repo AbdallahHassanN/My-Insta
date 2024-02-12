@@ -2,7 +2,7 @@ package com.example.myinsta.useCases
 
 import android.util.Log
 import com.example.myinsta.common.Constants
-import com.example.myinsta.repository.AuthRepository
+import com.example.myinsta.repository.authRepo.AuthRepository
 import com.example.myinsta.response.Resource
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flowOf

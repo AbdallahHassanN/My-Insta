@@ -1,4 +1,4 @@
-package com.example.myinsta.presentation.settingsScreen.changeNameScreen
+package com.example.myinsta.presentation.settingsScreen.changeBioScreen
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -11,26 +11,26 @@ import com.example.myinsta.presentation.settingsScreen.SettingsScreenViewModel
 import com.example.navapp.Screens
 
 @Composable
-fun ChangeNameScreen(
+fun ChangeBioScreen(
     navController: NavController
 ) {
     val viewModel: SettingsScreenViewModel = hiltViewModel()
     val userId by viewModel.userId.collectAsStateWithLifecycle()
-    var fullName = ""
-
+    var bio = ""
     LaunchedEffect(key1 = userId, block = {
         viewModel.getUserInfo(userId)
     })
     ChangeNameInfo(
-        pageText = "Name",
-        labelText = "Name",
-        text = fullName,
+        pageText = "Username",
+        labelText = "Username",
+        text = bio,
         onClick = {
-            viewModel.changeName(fullName)
+            /*TODO Change The bio*/
+            //viewModel.changeName(username)
             navController.navigate(Screens.SettingsScreen.route)
         },
-        onTextChanged = { newName ->
-            fullName = newName
+        onTextChanged = { newBio ->
+            bio = newBio
         }
     )
 }

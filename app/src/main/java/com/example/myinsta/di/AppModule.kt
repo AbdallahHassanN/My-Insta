@@ -1,7 +1,7 @@
 package com.example.myinsta.di
 
-import com.example.myinsta.repository.AuthRepository
-import com.example.myinsta.repository.AuthRepositoryImpl
+import com.example.myinsta.repository.authRepo.AuthRepository
+import com.example.myinsta.repository.authRepo.AuthRepositoryImpl
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module

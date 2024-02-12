@@ -26,7 +26,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.myinsta.R
-import com.example.myinsta.presentation.profileScreen.components.RoundedImageView
 import com.example.myinsta.ui.theme.QuickSandTypography
 @Preview(showBackground = true)
 @Composable
@@ -43,7 +42,8 @@ fun PostOnFeed(
                 .clickable {},
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            RoundedImageView(painterResource(id = R.drawable.hakari))
+            /*  TODO
+           RoundedImageView(painterResource(id = R.drawable.hakari))*/
             Text(
                 text = "Username", modifier = Modifier.padding(start = 10.dp),
                 style = QuickSandTypography.displaySmall,

@@ -11,6 +11,8 @@ sealed class Screens(val route:String) {
     object SettingsScreen : Screens("SettingsScreen")
     object ChangeNameScreen : Screens("ChangeNameScreen")
     object ChangeUsernameScreen : Screens("ChangeUsernameScreen")
+    object ChangeBioScreen : Screens("ChangeBioScreen")
+
     object NotificationScreen:Screens("NotificationScreen")
     object ChatScreen:Screens("ChatScreen")
 

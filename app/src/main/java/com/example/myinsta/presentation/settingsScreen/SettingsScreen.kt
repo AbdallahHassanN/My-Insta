@@ -16,23 +16,22 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.myinsta.R
-import com.example.myinsta.common.Constants.TAG
 import com.example.myinsta.common.pickFromGallery
 import com.example.myinsta.components.BoxItem
-import com.example.myinsta.presentation.mainScreen.MainScreenViewModel
 import com.example.myinsta.presentation.profileScreen.components.RoundedImageView
 import com.example.myinsta.ui.theme.BigStone
 import com.example.myinsta.ui.theme.QuickSandTypography
@@ -42,7 +41,21 @@ import com.example.navapp.Screens
 fun SettingsScreen(
     navController: NavController
 ) {
-    val viewModel: MainScreenViewModel = hiltViewModel()
+    val viewModel: SettingsScreenViewModel = hiltViewModel()
+    val userId by viewModel.userId.collectAsStateWithLifecycle()
+    val userInfo by viewModel.userInfo.collectAsStateWithLifecycle()
+    var username = ""
+    var fullName = ""
+    var img = ""
+
+    LaunchedEffect(key1 = userId, block = {
+        viewModel.getUserInfo(userId)
+    })
+    if (userInfo != null) {
+        username = userInfo!!.username
+        fullName = userInfo!!.fullName
+        img = userInfo!!.imageUrl
+    }
 
     val onLogoutClick: () -> Unit = {
         viewModel.logout()
@@ -52,6 +65,7 @@ fun SettingsScreen(
             }
         }
     }
+
     val getContent = rememberLauncherForActivityResult(
         contract = ActivityResultContracts
             .GetContent()
@@ -74,7 +88,7 @@ fun SettingsScreen(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceAround,
         ) {
-            RoundedImageView(painterResource(id = R.drawable.hakari))
+            RoundedImageView(img)
         }
         Row(
             modifier = Modifier
@@ -84,7 +98,7 @@ fun SettingsScreen(
             horizontalArrangement = Arrangement.SpaceAround,
         ) {
             Text(
-                text = "Account Name",
+                text = fullName,
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp,
                 color = Color.Black,
@@ -101,7 +115,7 @@ fun SettingsScreen(
             horizontalArrangement = Arrangement.SpaceAround,
         ) {
             Text(
-                text = "UserName",
+                text = username,
                 fontWeight = FontWeight.Bold,
                 fontSize = 15.sp,
                 color = Color.Gray,
@@ -137,6 +151,13 @@ fun SettingsScreen(
                     text = "Username",
                     onClick = {
                         navController.navigate(Screens.ChangeUsernameScreen.route)
+                    },
+                    color = Color.Black
+                )
+                BoxItem(
+                    text = "Bio",
+                    onClick = {
+                        navController.navigate(Screens.ChangeBioScreen.route)
                     },
                     color = Color.Black
                 )
