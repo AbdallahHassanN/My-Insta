@@ -12,5 +12,8 @@ object Constants {
     const val COLLECTION_NAME= "users"
     const val ERROR = "An unexpected error occurred"
     val DEFAULT_User_IMAGE = R.drawable.hakari
+    const val BASE_URL="gs://myinsta-79d59.appspot.com"
+    const val USER_NOT_LOGGED = "User not logged in"
+
 
 }

@@ -71,7 +71,7 @@ fun SettingsScreen(
             .GetContent()
     ) { uri: Uri? ->
         if (uri != null) {
-            /*TODO*/
+            viewModel.updateUserProfilePhoto(uri)
         }
     }
     Column(

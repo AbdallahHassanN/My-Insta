@@ -3,7 +3,7 @@ package com.example.myinsta
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import com.example.navapp.Navigation
+import com.example.myinsta.navigation.Navigation
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
