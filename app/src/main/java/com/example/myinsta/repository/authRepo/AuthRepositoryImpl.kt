@@ -147,4 +147,56 @@ class AuthRepositoryImpl @Inject constructor(
             }
             awaitClose()
         }
+
+    override fun changeBio(newBio: String): Flow<Resource<Boolean>>  =
+        callbackFlow {
+            firebaseAuth.currentUser?.let { user ->
+                val userDocument =
+                    FirebaseFirestore
+                        .getInstance()
+                        .collection("users")
+                        .document(user.uid)
+
+                userDocument.update("bio", newBio)
+                    .addOnSuccessListener {
+                        trySend(Resource.Success(true))
+                    }.addOnFailureListener {
+                        trySend(Resource.Error(it.message ?: ERROR))
+                    }
+            } ?: run {
+                trySend(Resource.Error("User not logged in"))
+            }
+            awaitClose()
+        }
+
+    override fun changeUsername(newUsername: String): Flow<Resource<Boolean>> =
+        callbackFlow {
+            trySend(Resource.Loading(true))
+            val usernameExists =
+                fireStore.collection(COLLECTION_NAME).whereEqualTo("username", newUsername).get()
+                    .await().size() > 0
+            if (usernameExists) {
+                trySend(Resource.Error(message = "Username already exists. Please choose a different one."))
+                close()
+                return@callbackFlow
+            }
+            firebaseAuth.currentUser?.let { user ->
+                val userDocument =
+                    FirebaseFirestore
+                        .getInstance()
+                        .collection("users")
+                        .document(user.uid)
+
+                userDocument.update("username", newUsername)
+                    .addOnSuccessListener {
+                        trySend(Resource.Success(true))
+                    }.addOnFailureListener {
+                        trySend(Resource.Error(it.message ?: ERROR))
+                    }
+            } ?: run {
+                trySend(Resource.Error("User not logged in"))
+            }
+            awaitClose()
+        }
+
 }

@@ -29,11 +29,10 @@ fun ChangeInfoTextField(
     onTextChanged: (String) -> Unit
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
-    var newInfo by remember { mutableStateOf(query) }
     TextField(
-        value = newInfo,
-        onValueChange = {  newInfo = it
-            onTextChanged(it)
+        value = query,
+        onValueChange = { newText ->
+            onTextChanged(newText)
         },
         Modifier
             .fillMaxWidth()

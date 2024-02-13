@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -18,15 +20,15 @@ import com.example.myinsta.ui.theme.QuickSandTypography
 
 @Composable
 fun ChangeNameInfo(
-    pageText:String,
-    labelText:String,
-    text:String,
-    onClick:() -> Unit,
+    pageText: String,
+    labelText: String,
+    text: String,
+    onClick: () -> Unit,
     onTextChanged: (String) -> Unit, // New lambda parameter for text change callback
 ) {
     Column(
         Modifier
-            .fillMaxSize()
+            .wrapContentSize()
             .background(BigStone)
     ) {
         Text(
@@ -38,14 +40,8 @@ fun ChangeNameInfo(
                 .padding(20.dp),
             style = QuickSandTypography.headlineMedium
         )
-        ChangeInfoTextField(label = labelText, query = text,onTextChanged = onTextChanged)
-        Column(
-            Modifier
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.Bottom
-        ) {
-            MyButton(text = "Save",onClick = onClick)
-        }
-    }
+        ChangeInfoTextField(label = labelText, query = text, onTextChanged = onTextChanged)
 
+        MyButton(text = "Save", onClick = onClick)
+    }
 }

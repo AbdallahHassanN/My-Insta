@@ -15,22 +15,23 @@ fun ChangeBioScreen(
     navController: NavController
 ) {
     val viewModel: SettingsScreenViewModel = hiltViewModel()
-    val userId by viewModel.userId.collectAsStateWithLifecycle()
+    /*val userId by viewModel.userId.collectAsStateWithLifecycle()
     var bio = ""
     LaunchedEffect(key1 = userId, block = {
         viewModel.getUserInfo(userId)
-    })
+    })*/
+    val bioValue by viewModel.bio.collectAsStateWithLifecycle()
+
     ChangeNameInfo(
-        pageText = "Username",
-        labelText = "Username",
-        text = bio,
+        pageText = "Edit Bio",
+        labelText = "Bio",
+        text = bioValue,
         onClick = {
-            /*TODO Change The bio*/
-            //viewModel.changeName(username)
+            viewModel.changeBio(bioValue)
             navController.navigate(Screens.SettingsScreen.route)
         },
-        onTextChanged = { newBio ->
-            bio = newBio
+        onTextChanged = {
+            viewModel.onBioChanged(it)
         }
     )
 }

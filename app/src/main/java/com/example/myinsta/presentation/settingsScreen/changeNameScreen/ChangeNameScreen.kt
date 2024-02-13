@@ -15,22 +15,19 @@ fun ChangeNameScreen(
     navController: NavController
 ) {
     val viewModel: SettingsScreenViewModel = hiltViewModel()
-    val userId by viewModel.userId.collectAsStateWithLifecycle()
-    var fullName = ""
+    val nameValue by viewModel.fullName.collectAsStateWithLifecycle()
 
-    LaunchedEffect(key1 = userId, block = {
-        viewModel.getUserInfo(userId)
-    })
+
     ChangeNameInfo(
-        pageText = "Name",
+        pageText = "Edit Name",
         labelText = "Name",
-        text = fullName,
+        text = nameValue,
         onClick = {
-            viewModel.changeName(fullName)
+            viewModel.changeName(nameValue)
             navController.navigate(Screens.SettingsScreen.route)
         },
-        onTextChanged = { newName ->
-            fullName = newName
+        onTextChanged = {
+            viewModel.onNameChanged(it)
         }
     )
 }

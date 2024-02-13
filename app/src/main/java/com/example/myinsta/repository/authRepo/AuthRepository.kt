@@ -24,4 +24,8 @@ interface AuthRepository {
 
     fun changeName(newName: String)
             : Flow<Resource<Boolean>>
+    fun changeBio(newBio: String)
+            : Flow<Resource<Boolean>>
+    fun changeUsername(newUsername: String)
+            : Flow<Resource<Boolean>>
 }
