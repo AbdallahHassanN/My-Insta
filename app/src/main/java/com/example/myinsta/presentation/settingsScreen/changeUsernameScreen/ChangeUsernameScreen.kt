@@ -1,13 +1,30 @@
 package com.example.myinsta.presentation.settingsScreen.changeNameScreen
 
+import android.util.Log
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.example.myinsta.common.Constants
+import com.example.myinsta.common.Constants.TAG
 import com.example.myinsta.components.ChangeNameInfo
 import com.example.myinsta.presentation.settingsScreen.SettingsScreenViewModel
+import com.example.myinsta.response.Resource
 import com.example.navapp.Screens
 
 @Composable
@@ -15,22 +32,66 @@ fun ChangeUsernameScreen(
     navController: NavController
 ) {
     val viewModel: SettingsScreenViewModel = hiltViewModel()
-    val userId by viewModel.userId.collectAsStateWithLifecycle()
-    var username = ""
-    LaunchedEffect(key1 = userId, block = {
-        viewModel.getUserInfo(userId)
-    })
-    ChangeNameInfo(
-        pageText = "Username",
-        labelText = "Username",
-        text = username,
-        onClick = {
-            /*TODO Change The userName*/
-            //viewModel.changeName(username)
-            navController.navigate(Screens.SettingsScreen.route)
-        },
-        onTextChanged = { newUsername ->
-            username = newUsername
+    val usernameValue by viewModel.username.collectAsStateWithLifecycle()
+    val editUsernameState = viewModel.editUsernameState.collectAsState()
+    val snackBarHostState = remember { SnackbarHostState() }
+    // Function to show the snackBar
+    suspend fun showSnackBar(message: String) {
+        snackBarHostState.showSnackbar(message)
+    }
+    editUsernameState.value.let {
+        when (it) {
+            is Resource.Error -> {
+                LaunchedEffect(Unit) {
+                    val error = it.message
+                    showSnackBar(error.toString())
+                    Log.d(TAG, "HA ? ${error.toString()}")
+                }
+            }
+            is Resource.Loading -> {
+                LaunchedEffect(Unit) {
+                    Log.d(TAG, "Loading")
+                }
+            }
+            is Resource.Success -> {
+                LaunchedEffect(Unit) {
+                    navController.navigate(Screens.SettingsScreen.route)
+                }
+            }
+            else -> {
+                Log.d(TAG, "Unexpected Error")
+            }
         }
-    )
+    }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        ChangeNameInfo(
+            pageText = "Edit Username",
+            labelText = "Username",
+            text = usernameValue,
+            onClick = {
+                viewModel.changeUsername(usernameValue)
+            },
+            onTextChanged = {
+                viewModel.onUsernameChanged(it)
+            }
+        )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 16.dp), // Adjust padding as needed
+            contentAlignment = Alignment.BottomCenter
+        ) {
+            SnackbarHost(
+                hostState = snackBarHostState,
+            ) { snackBar ->
+                Snackbar(
+                    snackbarData = snackBar,
+                    containerColor = Color.Red
+                )
+            }
+        }
+    }
 }
