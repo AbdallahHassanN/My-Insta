@@ -1,5 +1,6 @@
 package com.example.myinsta.repository.authRepo
 
+import android.net.Uri
 import com.example.myinsta.models.User
 import com.example.myinsta.response.Resource
 import com.google.firebase.auth.FirebaseUser
@@ -15,10 +16,10 @@ interface AuthRepository {
     )
             : Flow<Resource<FirebaseUser?>>
 
-    suspend fun logout()
+    fun logout()
             : Flow<Resource<Boolean>>
 
-    fun verifyEmail()
+    //fun verifyEmail()
     fun getUserId(): FirebaseUser?
     fun getUserInfo(userId: String): Flow<Resource<User?>>
 
@@ -27,5 +28,7 @@ interface AuthRepository {
     fun changeBio(newBio: String)
             : Flow<Resource<Boolean>>
     fun changeUsername(newUsername: String)
+            : Flow<Resource<Boolean>>
+    fun updateUserImg(uri: Uri, path: String)
             : Flow<Resource<Boolean>>
 }

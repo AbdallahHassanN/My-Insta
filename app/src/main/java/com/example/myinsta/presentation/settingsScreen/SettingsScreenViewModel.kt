@@ -1,21 +1,23 @@
 package com.example.myinsta.presentation.settingsScreen
 
+import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.myinsta.common.Constants.ERROR
 import com.example.myinsta.common.Constants.TAG
 import com.example.myinsta.common.validator.EmptyValidator
 import com.example.myinsta.common.validator.ValidateResult
 import com.example.myinsta.models.User
 import com.example.myinsta.response.Resource
+import com.example.myinsta.useCases.FirebaseChangeProfilePicture
 import com.example.myinsta.useCases.FirebaseEditBio
 import com.example.myinsta.useCases.FirebaseEditFullName
 import com.example.myinsta.useCases.FirebaseEditUsername
 import com.example.myinsta.useCases.FirebaseGetUserIdUseCase
 import com.example.myinsta.useCases.FirebaseGetUserInfoUseCase
 import com.example.myinsta.useCases.FirebaseLogoutUseCase
-import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -32,7 +34,8 @@ class SettingsScreenViewModel
     private val firebaseLogoutUseCase: FirebaseLogoutUseCase,
     private val firebaseEditFullName: FirebaseEditFullName,
     private val firebaseEditBio: FirebaseEditBio,
-    private val firebaseEditUsername: FirebaseEditUsername
+    private val firebaseEditUsername: FirebaseEditUsername,
+    private val firebaseChangeProfilePicture: FirebaseChangeProfilePicture,
 ) : ViewModel() {
 
     private val _userId = MutableStateFlow("")
@@ -68,7 +71,7 @@ class SettingsScreenViewModel
         }.collect { response ->
             when (response) {
                 is Resource.Error -> {
-                    Log.d(TAG, "Error response")
+                    Log.d(TAG, ERROR)
                 }
 
                 is Resource.Loading -> {
@@ -77,7 +80,6 @@ class SettingsScreenViewModel
 
                 is Resource.Success -> {
                     _userInfo.value = response.data!!
-                    Log.d(TAG, "dataView ${userInfo.value}")
                 }
             }
         }
@@ -106,7 +108,7 @@ class SettingsScreenViewModel
             firebaseEditFullName.execute(newName).collect { response ->
                 when (response) {
                     is Resource.Error -> {
-                        Log.d(TAG, "Error response")
+                        Log.d(TAG, ERROR)
                     }
 
                     is Resource.Loading -> {
@@ -142,13 +144,31 @@ class SettingsScreenViewModel
             firebaseEditBio.execute(newBio).collect { response ->
                 when (response) {
                     is Resource.Error -> {
-                        Log.d(TAG, "Error response")
+                        Log.d(TAG, ERROR)
                     }
 
                     is Resource.Loading -> {
                         Log.d(TAG, "Loading")
                     }
 
+                    is Resource.Success -> {
+                        Log.d(TAG, "Success")
+                    }
+                }
+            }
+        }
+    }
+
+    fun updateUserProfilePhoto(uri: Uri) {
+        viewModelScope.launch {
+            firebaseChangeProfilePicture.execute(uri, _userId.value).collect {
+                when (it) {
+                    is Resource.Error -> {
+                        Log.d(TAG, ERROR)
+                    }
+                    is Resource.Loading -> {
+                        Log.d(TAG, "Loading")
+                    }
                     is Resource.Success -> {
                         Log.d(TAG, "Success")
                     }

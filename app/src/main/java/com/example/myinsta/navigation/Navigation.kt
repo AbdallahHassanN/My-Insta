@@ -1,4 +1,4 @@
-package com.example.navapp
+package com.example.myinsta.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
@@ -10,13 +10,13 @@ import com.example.myinsta.presentation.settingsScreen.changeNameScreen.ChangeUs
 import com.example.myinsta.presentation.settingsScreen.SettingsScreen
 import com.example.myinsta.presentation.addPostScreen.AddPostScreen
 import com.example.myinsta.presentation.feedScreen.FeedScreen
-import com.example.myinsta.presentation.forgotPasswordScreen.ForgotPasswordScreen
 import com.example.myinsta.presentation.mainScreen.MainScreen
 import com.example.myinsta.presentation.notificationScreen.NotificationScreen
 import com.example.myinsta.presentation.profileScreen.ProfileScreen
 import com.example.myinsta.presentation.registerScreen.RegisterScreen
 import com.example.myinsta.presentation.searchScreen.SearchScreen
 import com.example.myinsta.presentation.settingsScreen.changeBioScreen.ChangeBioScreen
+import com.example.navapp.Screens
 
 @Composable
 fun Navigation() {
@@ -27,9 +27,6 @@ fun Navigation() {
         }
         composable(route = Screens.RegisterScreen.route) {
             RegisterScreen(navController = navController)
-        }
-        composable(route = Screens.ForgotPasswordScreen.route) {
-            ForgotPasswordScreen(navController = navController)
         }
         composable(route = Screens.FeedScreen.route) {
             FeedScreen(navController = navController)
