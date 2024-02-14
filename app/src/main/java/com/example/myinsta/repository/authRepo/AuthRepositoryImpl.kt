@@ -1,6 +1,10 @@
 package com.example.myinsta.repository.authRepo
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
+import android.provider.MediaStore
 import com.example.myinsta.common.Constants.COLLECTION_NAME
 import com.example.myinsta.common.Constants.ERROR
 import com.example.myinsta.common.Constants.USER_NOT_LOGGED
@@ -12,19 +16,25 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.userProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.withContext
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
 import javax.inject.Inject
+
 
 class AuthRepositoryImpl @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
     private val fireStore: FirebaseFirestore,
     private val storage: FirebaseStorage,
-
-    ) : AuthRepository {
+    private val appContext: Context
+) : AuthRepository {
 
     override suspend fun login(email: String, password: String): Flow<Resource<FirebaseUser>> {
         return try {
@@ -109,8 +119,7 @@ class AuthRepositoryImpl @Inject constructor(
         return firebaseAuth.currentUser
     }
 
-    override fun getUserInfo(userId: String): Flow<Resource<User?>>
-    = callbackFlow {
+    override fun getUserInfo(userId: String): Flow<Resource<User?>> = callbackFlow {
         val snapshotListener = fireStore.collection(COLLECTION_NAME).document(userId)
             .addSnapshotListener { snapshot, e ->
                 if (snapshot != null) {
@@ -201,29 +210,53 @@ class AuthRepositoryImpl @Inject constructor(
             : Flow<Resource<Boolean>> = callbackFlow {
         trySend(Resource.Loading(true))
         try {
-            storage.getReference(path).putFile(uri)
-                .addOnSuccessListener {
+            val compressedImageUri = compressImage(uri)
+            val success = uploadCompressedImage(compressedImageUri, path)
+            if (success) {
+                storage.getReference(path).downloadUrl.addOnSuccessListener {
                     firebaseAuth.currentUser?.let { user ->
                         val userDocument =
                             FirebaseFirestore
                                 .getInstance()
                                 .collection("users")
                                 .document(user.uid)
-                        userDocument.update("imageUrl", uri)
+                        userDocument.update("imageUrl", it)
                             .addOnSuccessListener {
                                 trySend(Resource.Success(true))
                             }.addOnFailureListener {
                                 trySend(Resource.Error(it.message ?: ERROR))
                             }
                     }
-                    trySend(Resource.Success(true))
-                }.addOnFailureListener {
-                    trySend(Resource.Error(it.message ?: ERROR))
                 }
+            } else {
+                trySend(Resource.Error(ERROR))
+            }
         } catch (e: Exception) {
             trySend(Resource.Error(e.message ?: ERROR))
         }
         trySend(Resource.Loading(false))
         awaitClose()
+    }
+
+    private fun compressImage(uri: Uri)
+            : Uri {
+        val bitmap = BitmapFactory.decodeStream(appContext.contentResolver.openInputStream(uri))
+        val outputStream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, outputStream)
+        val compressedImageFile = File(appContext.cacheDir, "temp_image.jpg")
+        val compressedOutputStream = FileOutputStream(compressedImageFile)
+        compressedOutputStream.write(outputStream.toByteArray())
+        compressedOutputStream.close()
+        return Uri.fromFile(compressedImageFile)
+    }
+
+    private suspend fun uploadCompressedImage(compressedImageUri: Uri, path: String)
+            : Boolean {
+        return try {
+            storage.getReference(path).putFile(compressedImageUri).await()
+            true
+        } catch (e: Exception) {
+            false
+        }
     }
 }
