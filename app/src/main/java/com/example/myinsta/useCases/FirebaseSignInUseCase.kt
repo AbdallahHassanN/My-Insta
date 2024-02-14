@@ -1,15 +1,18 @@
 package com.example.myinsta.useCases
 
+import android.content.Context
 import android.util.Log
 import com.example.myinsta.common.Constants
 import com.example.myinsta.repository.authRepo.AuthRepository
 import com.example.myinsta.response.Resource
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flowOf
 import javax.inject.Inject
 
 class FirebaseSignInUseCase @Inject constructor(
-    private val repo: AuthRepository
+    private val repo: AuthRepository,
+    @ApplicationContext private val context: Context
 ) {
     suspend fun execute(
         email: String, password: String
