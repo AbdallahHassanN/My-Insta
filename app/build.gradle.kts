@@ -84,6 +84,6 @@ dependencies {
 
     implementation(platform(libs.com.google.firebase))
     implementation(libs.bundles.firebase)
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
+    implementation(libs.androidx.lifecycle.runtime.compose.v262)
 
 }

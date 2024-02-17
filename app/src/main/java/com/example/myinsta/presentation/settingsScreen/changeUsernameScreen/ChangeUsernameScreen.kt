@@ -39,27 +39,25 @@ fun ChangeUsernameScreen(
     suspend fun showSnackBar(message: String) {
         snackBarHostState.showSnackbar(message)
     }
-    editUsernameState.value.let {
-        when (it) {
-            is Resource.Error -> {
-                LaunchedEffect(Unit) {
-                    val error = it.message
+    LaunchedEffect(true) {
+        viewModel.editUsernameState.collect { state ->
+            when (state) {
+                is Resource.Error -> {
+                    val error = state.message
                     showSnackBar(error.toString())
                     Log.d(TAG, "HA ? ${error.toString()}")
                 }
-            }
-            is Resource.Loading -> {
-                LaunchedEffect(Unit) {
+                is Resource.Loading -> {
                     Log.d(TAG, "Loading")
                 }
-            }
-            is Resource.Success -> {
-                LaunchedEffect(Unit) {
-                    navController.navigate(Screens.SettingsScreen.route)
+                is Resource.Success -> {
+                    navController.navigate(Screens.SettingsScreen.route) {
+                        popUpTo(Screens.SettingsScreen.route) { inclusive = true }
+                    }
                 }
-            }
-            else -> {
-                Log.d(TAG, "Unexpected Error")
+                else -> {
+                    Log.d(TAG, "Unexpected Error")
+                }
             }
         }
     }

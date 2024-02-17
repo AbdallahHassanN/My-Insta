@@ -6,6 +6,7 @@ google-firebase = "4.4.0"
 
 firebase-ver = "32.7.1"
 junit = "4.13.2"
+lifecycle-runtime-compose = "2.6.2"
 test-ext = "1.1.5"
 espresso-core = "3.5.1"
 
@@ -38,6 +39,7 @@ firebase-auth-ktx = "22.3.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx-version" }
+androidx-lifecycle-runtime-compose-v262 = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle-runtime-compose" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle-runtime-ktx" }
 org-core-ktx = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "androidx-core-ktx" }
 #Retrofit

@@ -132,6 +132,8 @@ class SettingsScreenViewModel
                     newUsername = newUsername.trim()
                 ).collect {
                     _editUsernameState.value = it
+                    Log.d(TAG, "EH ${_editUsernameState.value}")
+
                 }
             }else{
                 _editUsernameState.value = Resource.Error("Username Empty")
