@@ -3,6 +3,8 @@ package com.example.myinsta.di
 import android.content.Context
 import com.example.myinsta.BaseApplication
 import com.example.myinsta.common.Constants.BASE_URL
+import com.example.myinsta.repository.FirebaseRepo.FirebaseRepository
+import com.example.myinsta.repository.FirebaseRepo.FirebaseRepositoryImpl
 import com.example.myinsta.repository.authRepo.AuthRepository
 import com.example.myinsta.repository.authRepo.AuthRepositoryImpl
 import com.google.firebase.auth.FirebaseAuth
@@ -50,6 +52,14 @@ object AppModule {
             firebaseStorage,
             appContext
         )
+    }
+
+    @Singleton
+    @Provides
+    fun provideUserRepository(
+        firestore: FirebaseFirestore
+    ): FirebaseRepository {
+        return FirebaseRepositoryImpl(firestore)
     }
 
     @Singleton
