@@ -24,7 +24,9 @@ fun ChangeNameScreen(
         text = nameValue,
         onClick = {
             viewModel.changeName(nameValue)
-            navController.navigate(Screens.SettingsScreen.route)
+            navController.navigate(Screens.SettingsScreen.route) {
+                popUpTo(Screens.SettingsScreen.route) { inclusive = true }
+            }
         },
         onTextChanged = {
             viewModel.onNameChanged(it)

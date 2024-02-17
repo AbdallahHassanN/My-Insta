@@ -41,7 +41,7 @@ class AuthRepositoryImpl @Inject constructor(
             val response = firebaseAuth.signInWithEmailAndPassword(email, password).await()
             flowOf(Resource.Success(response.user!!))
         } catch (e: Exception) {
-            flowOf(Resource.Error(ERROR))
+            flowOf(Resource.Error("Invalid Username or password "))
         }
     }
 
