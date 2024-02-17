@@ -36,11 +36,13 @@ import androidx.compose.ui.unit.dp
 @OptIn(ExperimentalComposeUiApi::class)
 @SuppressLint("MutableCollectionMutableState")
 @Composable
-@Preview(showBackground = true)
-fun SearchAppBar() {
+fun SearchAppBar(
+    query: String,
+    onQueryChanged: (String) -> Unit,
+    onExecuteSearch: () -> Unit,
+) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusRequester = remember { FocusRequester() }
-    var searchText by remember { mutableStateOf("") }
     val context = LocalContext.current
 
     LaunchedEffect(
@@ -61,8 +63,10 @@ fun SearchAppBar() {
                     .fillMaxWidth()
             ) {
                 TextField(
-                    value = searchText,
-                    onValueChange = { newValue -> searchText = newValue },
+                    value = query,
+                    onValueChange = { newValue ->
+                        onQueryChanged(newValue)
+                    },
                     Modifier
                         .fillMaxWidth()
                         .focusRequester(focusRequester)
@@ -80,7 +84,10 @@ fun SearchAppBar() {
                         autoCorrect = true
                     ),
                     keyboardActions = KeyboardActions(
-                        onSearch = { keyboardController?.hide() }
+                        onSearch = {
+                            onExecuteSearch()
+                            keyboardController?.hide()
+                        }
                     ),
                     colors = TextFieldDefaults.colors(
                         focusedTextColor = Color.Black, // Change text color

@@ -14,6 +14,7 @@ object Constants {
     val DEFAULT_User_IMAGE = R.drawable.hakari
     const val BASE_URL="gs://myinsta-79d59.appspot.com"
     const val USER_NOT_LOGGED = "User not logged in"
+    const val USER_ID = "userId"
 
 
 }

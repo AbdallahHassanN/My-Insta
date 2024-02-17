@@ -15,4 +15,13 @@ sealed class Screens(val route:String) {
     object NotificationScreen:Screens("NotificationScreen")
     object ChatScreen:Screens("ChatScreen")
 
+    fun withArgs(vararg args:String):String {
+        return buildString {
+            append(route)
+            args.forEach {
+                append("/$it")
+            }
+        }
+    }
+
 }

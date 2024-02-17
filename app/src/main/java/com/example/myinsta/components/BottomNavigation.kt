@@ -21,6 +21,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavController
 import com.example.myinsta.common.Constants.TAG
+import com.example.myinsta.common.Constants.USER_ID
 import com.example.myinsta.models.BottomNavigationItem
 import com.example.navapp.Screens
 
@@ -51,7 +52,7 @@ fun BottomNavigation(
             title = "Profile",
             selectedItem = Icons.Filled.AccountCircle,
             unSelectedIcon = Icons.Outlined.AccountCircle,
-            route = Screens.ProfileScreen.route
+            route = "${Screens.ProfileScreen.route}/$USER_ID"
         ),
     )
     var selectedItemIndex by rememberSaveable {

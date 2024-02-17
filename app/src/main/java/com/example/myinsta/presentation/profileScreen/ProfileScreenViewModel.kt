@@ -10,6 +10,7 @@ import com.example.myinsta.useCases.FirebaseGetUserIdUseCase
 import com.example.myinsta.useCases.FirebaseGetUserInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
@@ -21,16 +22,16 @@ class ProfileScreenViewModel
     private val firebaseGetUserIdUseCase: FirebaseGetUserIdUseCase,
     private val firebaseGetUserInfoUseCase: FirebaseGetUserInfoUseCase
 ) : ViewModel() {
-    private val _userId = MutableStateFlow("")
+    private val _userId = MutableStateFlow<String?>(null)
     val userId = _userId.asStateFlow()
-
 
     private val _userInfo = MutableStateFlow<User?>(null)
     val userInfo = _userInfo.asStateFlow()
+
     init {
-        firebaseGetUserIdUseCase.execute()?.let {
-            _userId.value = it.uid
-            getUserInfo(_userId.value)
+        firebaseGetUserIdUseCase.execute()?.let { user ->
+            _userId.value = user.uid
+            getUserInfo(_userId.value.toString())
         }
     }
 
@@ -48,7 +49,7 @@ class ProfileScreenViewModel
                     Log.d(TAG, "Loading")
                 }
                 is Resource.Success -> {
-                    _userInfo.value = response.data!!
+                    _userInfo.value = response.data ?: User()
                     Log.d(TAG, "dataView ${userInfo.value}")
                 }
             }

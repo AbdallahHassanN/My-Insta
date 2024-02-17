@@ -29,13 +29,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.myinsta.R
 import com.example.myinsta.common.Constants.TAG
 import com.example.myinsta.components.CustomDivider
@@ -46,23 +44,31 @@ import com.example.navapp.Screens
 
 @Composable
 fun ProfileScreen(
+    id: String,
     navController: NavController
 ) {
     val viewModel: ProfileScreenViewModel = hiltViewModel()
-    val userId by viewModel.userId.collectAsStateWithLifecycle()
     val userInfo by viewModel.userInfo.collectAsStateWithLifecycle()
-    var username : String = ""
-    var fullName : String = ""
-    var bio : String = ""
-    var img : String = ""
-    var followers : Int = 0
-    var following : Int = 0
-    var posts : Int = 0
+    val userId by viewModel.userId.collectAsStateWithLifecycle()
 
+    var username: String = ""
+    var fullName: String = ""
+    var bio: String = ""
+    var img: String = ""
+    var followers: Int = 0
+    var following: Int = 0
+    var posts: Int = 0
 
-    LaunchedEffect(key1 = userId, block = {
-        viewModel.getUserInfo(userId)
-    })
+    if (id != "userId") {
+        LaunchedEffect(key1 = true, block = {
+            viewModel.getUserInfo(id)
+        })
+    } else {
+        LaunchedEffect(key1 = true, block = {
+            userId?.let { viewModel.getUserInfo(it) }
+        })
+    }
+
     if (userInfo != null) {
         username = userInfo!!.username
         fullName = userInfo!!.fullName
@@ -171,11 +177,4 @@ fun ProfileScreen(
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DisplayProfileScreen() {
-    val navController = rememberNavController()
-    ProfileScreen(navController = navController)
 }
