@@ -20,6 +20,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.myinsta.common.Constants.TAG
 import com.example.myinsta.common.Constants.USER_ID
 import com.example.myinsta.models.BottomNavigationItem
@@ -34,45 +35,51 @@ fun BottomNavigation(
             title = "Home",
             selectedItem = Icons.Filled.Home,
             unSelectedIcon = Icons.Outlined.Home,
-            route = Screens.FeedScreen.route
+            route = Screens.FeedScreen.route,
+            id = 0
         ),
         BottomNavigationItem(
             title = "Search",
             selectedItem = Icons.Filled.Search,
             unSelectedIcon = Icons.Outlined.Search,
-            route = Screens.SearchScreen.route
+            route = Screens.SearchScreen.route,
+            id = 1
         ),
         BottomNavigationItem(
             title = "Add Post",
             selectedItem = Icons.Filled.AddCircle,
             unSelectedIcon = Icons.Outlined.AddCircle,
-            route = Screens.AddPostScreen.route
+            route = Screens.AddPostScreen.route,
+            id = 2
         ),
         BottomNavigationItem(
             title = "Profile",
             selectedItem = Icons.Filled.AccountCircle,
             unSelectedIcon = Icons.Outlined.AccountCircle,
-            route = "${Screens.ProfileScreen.route}/$USER_ID"
+            route = "${Screens.ProfileScreen.route}/$USER_ID",
+            id = 3
         ),
     )
-    var selectedItemIndex by rememberSaveable {
-        mutableIntStateOf(0)
-    }
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
     NavigationBar {
         items.forEachIndexed { index, item ->
             NavigationBarItem(
-                selected = selectedItemIndex == index,
+                selected = currentRoute == item.route,
                 onClick = {
-                    selectedItemIndex = index
-                    navController.navigate(item.route)
-                    Log.d(TAG,item.route)
+                    navController.navigate(item.route) {
+                        popUpTo(navController.graph.startDestinationId)
+                        launchSingleTop = true
+                    }
                 },
                 label = {
                     Text(text = item.title)
                 },
                 icon = {
                     Icon(
-                        imageVector = if (index == selectedItemIndex) item.selectedItem else item.unSelectedIcon,
+                        imageVector = if (index == item.id) item.selectedItem
+                        else item.unSelectedIcon,
                         contentDescription = item.title
                     )
                 }
