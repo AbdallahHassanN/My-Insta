@@ -10,6 +10,8 @@ data class User(
     val following: Int=0,
     val followers: Int=0,
     val chats:List<String> = emptyList(),
+    val followersList : List<String> = emptyList(),
+    val followingList : List<String> = emptyList(),
     val totalPosts: Int = 0,
     val bio: String = "",
 )

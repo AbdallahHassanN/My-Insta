@@ -23,6 +23,7 @@ import com.example.myinsta.presentation.profileScreen.ProfileScreenViewModel
 import com.example.myinsta.presentation.registerScreen.RegisterScreen
 import com.example.myinsta.presentation.searchScreen.SearchScreen
 import com.example.myinsta.presentation.settingsScreen.changeBioScreen.ChangeBioScreen
+import com.example.myinsta.presentation.userScreen.UserScreen
 import com.example.navapp.Screens
 
 @Composable
@@ -41,24 +42,15 @@ fun Navigation() {
         composable(route = Screens.SearchScreen.route) {
             SearchScreen(navController = navController)
         }
-        /*composable(route = Screens.ProfileScreen.route) {
+        composable(route = Screens.ProfileScreen.route) {
             ProfileScreen(navController = navController)
-        }*/
-        /*composable(route = Screens.ProfileScreen.route + "/{${USER_ID}}",
-            arguments = listOf(navArgument(USER_ID){
-                type = NavType.StringType
-            })
-        ){
-            it.arguments!!
-                .getString(USER_ID)
-                ?.let { it1 -> ProfileScreen(id = it1,navController = navController) }
-        }*/
+        }
         composable(
-            route = Screens.ProfileScreen.route + "/{$USER_ID}",
+            route = Screens.UserScreen.route + "/{$USER_ID}",
             arguments = listOf(navArgument(USER_ID) { type = NavType.StringType })
         ) { backStackEntry ->
             val userId = backStackEntry.arguments?.getString(USER_ID) ?: ""
-            ProfileScreen(id = userId, navController = navController)
+            UserScreen(id = userId, navController = navController)
         }
         composable(route = Screens.AddPostScreen.route) {
             AddPostScreen(navController = navController)

@@ -1,4 +1,4 @@
-package com.example.myinsta.presentation.profileScreen
+package com.example.myinsta.presentation.userScreen
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -12,16 +12,14 @@ import com.example.myinsta.useCases.FirebaseGetUserIdUseCase
 import com.example.myinsta.useCases.FirebaseGetUserInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ProfileScreenViewModel
+class UserScreenViewModel
 @Inject constructor(
-    private val firebaseGetUserIdUseCase: FirebaseGetUserIdUseCase,
     private val firebaseGetUserInfoUseCase: FirebaseGetUserInfoUseCase,
     private val firebaseFollowUser: FirebaseFollowUser
 ) : ViewModel() {
@@ -32,10 +30,7 @@ class ProfileScreenViewModel
     val userInfo = _userInfo.asStateFlow()
 
     init {
-        firebaseGetUserIdUseCase.execute()?.let { user ->
-            _userId.value = user.uid
-            getUserInfo(_userId.value.toString())
-        }
+        getUserInfo(_userId.value.toString())
     }
 
     fun getUserInfo(id:String) = viewModelScope.launch {
@@ -54,6 +49,27 @@ class ProfileScreenViewModel
                 is Resource.Success -> {
                     _userInfo.value = response.data ?: User()
                     Log.d(TAG, "dataView ${userInfo.value}")
+                }
+            }
+        }
+    }
+
+    fun followUser(id: String) {
+        viewModelScope.launch {
+            firebaseFollowUser
+                .execute(id)
+                .collect { response ->
+                when (response) {
+                    is Resource.Error -> {
+                        Log.d(TAG, Constants.ERROR)
+                    }
+
+                    is Resource.Loading -> {
+                        Log.d(TAG, "Loading")
+                    }
+                    is Resource.Success -> {
+                        Log.d(TAG, "Success")
+                    }
                 }
             }
         }
