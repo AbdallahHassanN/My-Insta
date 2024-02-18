@@ -1,6 +1,5 @@
 package com.example.myinsta.components
 
-import android.util.Log
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.AddCircle
@@ -16,12 +15,8 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.myinsta.common.Constants.TAG
 import com.example.myinsta.common.Constants.USER_ID
 import com.example.myinsta.models.BottomNavigationItem
 import com.example.navapp.Screens
@@ -52,13 +47,20 @@ fun BottomNavigation(
             route = Screens.AddPostScreen.route,
             id = 2
         ),
-        BottomNavigationItem(
+        /*BottomNavigationItem(
             title = "Profile",
             selectedItem = Icons.Filled.AccountCircle,
             unSelectedIcon = Icons.Outlined.AccountCircle,
             route = "${Screens.ProfileScreen.route}/$USER_ID",
             id = 3
-        ),
+        ),*/
+        BottomNavigationItem(
+            title = "Profile",
+            selectedItem = Icons.Filled.AccountCircle,
+            unSelectedIcon = Icons.Outlined.AccountCircle,
+            route = Screens.ProfileScreen.route,
+            id = 3
+        )
     )
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route

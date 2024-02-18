@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.provider.MediaStore
 import com.example.myinsta.common.Constants.COLLECTION_NAME
 import com.example.myinsta.common.Constants.ERROR
 import com.example.myinsta.common.Constants.USER_NOT_LOGGED
@@ -16,13 +15,11 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.userProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -41,7 +38,7 @@ class AuthRepositoryImpl @Inject constructor(
             val response = firebaseAuth.signInWithEmailAndPassword(email, password).await()
             flowOf(Resource.Success(response.user!!))
         } catch (e: Exception) {
-            flowOf(Resource.Error("Invalid Username or password "))
+            flowOf(Resource.Error("Invalid Email or password "))
         }
     }
 
@@ -72,7 +69,9 @@ class AuthRepositoryImpl @Inject constructor(
                             username = username,
                             email = email,
                             password = password,
-                            fullName = fullName
+                            fullName = fullName,
+                            followingList = emptyList(),
+                            followersList = emptyList()
                         )
                         fireStore.collection(COLLECTION_NAME).document(userId).set(userInfo)
                             .addOnSuccessListener {

@@ -39,7 +39,7 @@ fun UserList(
                 items = users ?: emptyList()
             ) { index, user ->
                 UserCard(user = user, onClick ={
-                    navController.navigate(Screens.ProfileScreen.withArgs(user.id))
+                    navController.navigate(Screens.UserScreen.withArgs(user.id))
                 })
             }
         }

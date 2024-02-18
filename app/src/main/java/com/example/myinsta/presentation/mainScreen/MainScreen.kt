@@ -90,7 +90,7 @@ fun MainScreen(navController: NavController) {
         )
 
         UsernameOrEmailTextField(
-            label = "Enter Username or Email",
+            label = "Enter Email",
             inputValue = emailValue,
             onQueryChanged = { viewModel.onEmailChanged(it) },
             isError = viewModel.emailValidation.value?.isSuccess?.not() ?: false,

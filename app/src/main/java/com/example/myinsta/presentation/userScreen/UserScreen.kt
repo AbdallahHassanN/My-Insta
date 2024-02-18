@@ -1,9 +1,8 @@
-package com.example.myinsta.presentation.profileScreen
+package com.example.myinsta.presentation.userScreen
 
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,10 +14,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.AddCircle
-import androidx.compose.material.icons.rounded.Settings
-import androidx.compose.material3.Icon
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -40,16 +37,14 @@ import com.example.myinsta.components.CustomDivider
 import com.example.myinsta.presentation.profileScreen.components.ProfileStates
 import com.example.myinsta.presentation.profileScreen.components.RoundedImageView
 import com.example.myinsta.ui.theme.QuickSandTypography
-import com.example.navapp.Screens
 
 @Composable
-fun ProfileScreen(
-    //id: String,
+fun UserScreen(
+    id: String,
     navController: NavController
 ) {
-    val viewModel: ProfileScreenViewModel = hiltViewModel()
+    val viewModel: UserScreenViewModel = hiltViewModel()
     val userInfo by viewModel.userInfo.collectAsStateWithLifecycle()
-    val userId by viewModel.userId.collectAsStateWithLifecycle()
     var username: String = ""
     var fullName: String = ""
     var bio: String = ""
@@ -58,10 +53,9 @@ fun ProfileScreen(
     var following: Int = 0
     var posts: Int = 0
 
-    LaunchedEffect(key1 = userId, block = {
-        viewModel.getUserInfo(userId!!)
+    LaunchedEffect(key1 = id, block = {
+        viewModel.getUserInfo(id)
     })
-
     if (userInfo != null) {
         username = userInfo!!.username
         fullName = userInfo!!.fullName
@@ -87,27 +81,6 @@ fun ProfileScreen(
                     .padding(10.dp)
                     .fillMaxWidth(0.8F),
                 style = QuickSandTypography.headlineMedium
-            )
-            Icon(
-                imageVector = Icons.Rounded.AddCircle,
-                contentDescription = "",
-                modifier = Modifier
-                    .padding(top = 15.dp)
-                    .clickable(enabled = true,
-                        onClick = {
-                            navController.navigate(Screens.AddPostScreen.route)
-                        })
-            )
-
-            Icon(
-                imageVector = Icons.Rounded.Settings,
-                contentDescription = "",
-                modifier = Modifier
-                    .padding(top = 15.dp, start = 15.dp)
-                    .clickable(enabled = true,
-                        onClick = {
-                            navController.navigate(Screens.SettingsScreen.route)
-                        })
             )
         }
         Row(
@@ -155,6 +128,18 @@ fun ProfileScreen(
                     style = QuickSandTypography.headlineSmall,
                     modifier = Modifier.weight(1f)
                 )
+                Button(
+                    modifier = Modifier
+                        .padding(end = 5.dp),
+                    colors = ButtonDefaults
+                        .buttonColors(containerColor = Color.Blue),
+                    onClick = {
+                        Log.d(TAG, "4$id")
+                        viewModel.followUser(id)
+                    }
+                ) {
+                    Text(text = "Follow", fontSize = 16.sp)
+                }
             }
         }
         CustomDivider()

@@ -15,6 +15,8 @@ sealed class Screens(val route:String) {
     object NotificationScreen:Screens("NotificationScreen")
     object ChatScreen:Screens("ChatScreen")
 
+    object UserScreen:Screens("UserScreen")
+
     fun withArgs(vararg args:String):String {
         return buildString {
             append(route)

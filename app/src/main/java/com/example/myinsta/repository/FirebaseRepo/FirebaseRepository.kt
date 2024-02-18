@@ -8,4 +8,6 @@ interface FirebaseRepository {
     fun getUsersByName(name: String)
             : Flow<Resource<List<User>>>
 
+    fun followUser(id: String)
+            : Flow<Resource<Boolean>>
 }
