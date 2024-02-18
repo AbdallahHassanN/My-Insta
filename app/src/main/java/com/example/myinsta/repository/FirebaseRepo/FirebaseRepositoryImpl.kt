@@ -43,23 +43,37 @@ class FirebaseRepositoryImpl @Inject constructor(
 
     override fun followUser(id: String): Flow<Resource<Boolean>> = callbackFlow {
         firebaseAuth.currentUser?.let { user ->
+            //doc for user
             val userDocument = FirebaseFirestore
                 .getInstance()
                 .collection("users")
                 .document(user.uid)
+            //doc for the following
+            val followingDocument = FirebaseFirestore
+                .getInstance()
+                .collection("users")
+                .document(id)
 
             userDocument
                 .get()
                 .addOnSuccessListener { snapshot ->
+                    //2 docs to update the user and the following
                     val followingList =
                         snapshot["followingList"] as? MutableList<String> ?: mutableListOf()
+                    val followersList =
+                        snapshot["followersList"] as? MutableList<String> ?: mutableListOf()
                     if (!followingList.contains(id)) {
                         followingList.add(id)
                         userDocument
                             .update("followingList", followingList)
                             .addOnSuccessListener {
+                                followersList.add(user.uid)
                                 userDocument
                                     .update("following",FieldValue.increment(1))
+                                followingDocument
+                                    .update("followers",FieldValue.increment(1))
+                                followingDocument
+                                    .update("followersList",followersList)
                                 trySend(Resource.Success(true))
                             }.addOnFailureListener {
                                 trySend(Resource.Error(it.message!!))
