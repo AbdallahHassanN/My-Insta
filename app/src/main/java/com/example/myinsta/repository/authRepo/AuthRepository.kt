@@ -19,7 +19,6 @@ interface AuthRepository {
     fun logout()
             : Flow<Resource<Boolean>>
 
-    //fun verifyEmail()
     fun getUserId(): FirebaseUser?
     fun getUserInfo(userId: String): Flow<Resource<User?>>
 

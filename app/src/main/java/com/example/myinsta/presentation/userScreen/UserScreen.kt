@@ -37,6 +37,7 @@ import com.example.myinsta.components.CustomDivider
 import com.example.myinsta.presentation.profileScreen.components.ProfileStates
 import com.example.myinsta.presentation.profileScreen.components.RoundedImageView
 import com.example.myinsta.ui.theme.QuickSandTypography
+import com.example.navapp.Screens
 
 @Composable
 fun UserScreen(
@@ -111,11 +112,15 @@ fun UserScreen(
                 ProfileStates(
                     numberText = followers.toString(),
                     text = "Followers"
-                ) {}
+                ) {
+                    navController.navigate(Screens.FollowersListScreen.withArgs(id))
+                }
                 ProfileStates(
                     numberText = following.toString(),
                     text = "Following"
-                ) {}
+                ) {
+                    navController.navigate(Screens.FollowingListScreen.withArgs(id))
+                }
             }
         }
         Column(

@@ -34,7 +34,7 @@ class SearchScreenViewModel
     ){
         viewModelScope.launch {
             loading.value = true
-            firebaseGetUserByName.execute(name).collect{response->
+            firebaseGetUserByName.execute(name).collect{ response->
                 when (response) {
                     is Resource.Error -> {
                         Log.d(Constants.TAG, "Error response")
