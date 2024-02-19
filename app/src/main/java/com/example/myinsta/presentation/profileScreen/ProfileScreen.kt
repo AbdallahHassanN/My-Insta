@@ -129,11 +129,16 @@ fun ProfileScreen(
                 ProfileStates(
                     numberText = followers.toString(),
                     text = "Followers"
-                ) {}
+                ) {
+                    navController.navigate(Screens.FollowersListScreen.withArgs(userId!!))
+
+                }
                 ProfileStates(
                     numberText = following.toString(),
                     text = "Following"
-                ) {}
+                ) {
+                    navController.navigate(Screens.FollowingListScreen.withArgs(userId!!))
+                }
             }
         }
         Column(
