@@ -137,6 +137,7 @@ fun ProfileScreen(
                     numberText = following.toString(),
                     text = "Following"
                 ) {
+                    //AA
                     navController.navigate(Screens.FollowingListScreen.withArgs(userId!!))
                 }
             }
