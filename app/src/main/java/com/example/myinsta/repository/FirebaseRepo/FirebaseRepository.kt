@@ -10,4 +10,6 @@ interface FirebaseRepository {
 
     fun followUser(id: String)
             : Flow<Resource<Boolean>>
+    fun unfollowUser(id: String)
+            : Flow<Resource<Boolean>>
 }

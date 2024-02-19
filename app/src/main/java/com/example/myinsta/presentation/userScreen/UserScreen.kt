@@ -45,6 +45,9 @@ fun UserScreen(
 ) {
     val viewModel: UserScreenViewModel = hiltViewModel()
     val userInfo by viewModel.userInfo.collectAsStateWithLifecycle()
+    val currentUserId by viewModel.currentUserId.collectAsStateWithLifecycle()
+
+    var btnState:Boolean = false
     var username: String = ""
     var fullName: String = ""
     var bio: String = ""
@@ -64,6 +67,13 @@ fun UserScreen(
         following = userInfo!!.following
         posts = userInfo!!.totalPosts
         img = userInfo!!.imageUrl
+        btnState = if(userInfo!!.followersList.contains(currentUserId)){
+            viewModel.changeToFollowState()
+            true
+        }else{
+            viewModel.changeToUnfollowState()
+            false
+        }
     }
     Column(
         modifier = Modifier
@@ -89,7 +99,6 @@ fun UserScreen(
                 .padding(10.dp)
         ) {
             RoundedImageView(img)
-            Log.d(TAG, "HH$img")
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceAround,
@@ -129,16 +138,28 @@ fun UserScreen(
                     modifier = Modifier.weight(1f)
                 )
                 Button(
-                    modifier = Modifier
-                        .padding(end = 5.dp),
+                    modifier = Modifier.padding(end = 5.dp),
                     colors = ButtonDefaults
-                        .buttonColors(containerColor = Color.Blue),
+                        .buttonColors(
+                        containerColor =
+                        if (btnState) Color.Green else Color.Blue
+                    ),
                     onClick = {
-                        Log.d(TAG, "4$id")
-                        viewModel.followUser(id)
+                        btnState = if(!(userInfo!!.followersList.contains(currentUserId))){
+                            viewModel.followUser(id)
+                            viewModel.changeToFollowState()
+                            true
+                        }else{
+                            viewModel.unfollowUser(id)
+                            viewModel.changeToUnfollowState()
+                            false
+                        }
                     }
                 ) {
-                    Text(text = "Follow", fontSize = 16.sp)
+                    Text(
+                        text = if (btnState) "Following" else "Follow",
+                        fontSize = 16.sp
+                    )
                 }
             }
         }
