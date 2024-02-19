@@ -10,6 +10,19 @@ interface FirebaseRepository {
 
     fun followUser(id: String)
             : Flow<Resource<Boolean>>
+
     fun unfollowUser(id: String)
             : Flow<Resource<Boolean>>
+
+    fun getFollowersListIds(id: String)
+            : Flow<Resource<List<String>>>
+
+    fun getFollowersInfo(ids: String)
+            : Flow<Resource<List<User>>>
+    fun getFollowingListIds(id: String)
+            : Flow<Resource<List<String>>>
+
+    fun getFollowingInfo(ids: String)
+            : Flow<Resource<List<User>>>
+
 }

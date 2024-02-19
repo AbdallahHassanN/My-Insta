@@ -16,6 +16,7 @@ import com.example.myinsta.common.Constants.TAG
 import com.example.myinsta.models.User
 import com.example.myinsta.ui.theme.Purple80
 import com.example.navapp.Screens
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun UserList(
@@ -24,9 +25,9 @@ fun UserList(
     navController: NavController,
     loading: Boolean
     ) {
-
+    val currentUser = FirebaseAuth.getInstance().currentUser
+    val currentUserId = currentUser?.uid ?: ""
     val listState = rememberLazyListState()
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -39,7 +40,11 @@ fun UserList(
                 items = users ?: emptyList()
             ) { index, user ->
                 UserCard(user = user, onClick ={
-                    navController.navigate(Screens.UserScreen.withArgs(user.id))
+                    if(currentUserId == user.id) {
+                        navController.navigate(Screens.ProfileScreen.route)
+                    }else{
+                        navController.navigate(Screens.UserScreen.withArgs(user.id))
+                    }
                 })
             }
         }
