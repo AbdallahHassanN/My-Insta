@@ -17,7 +17,8 @@ class FirebaseRepositoryImpl @Inject constructor(
     private val fireStore: FirebaseFirestore,
     private val firebaseAuth: FirebaseAuth,
 ) : FirebaseRepository {
-    override fun getUsersByName(name: String): Flow<Resource<List<User>>> = callbackFlow {
+    override fun getUsersByName(name: String): Flow<Resource<List<User>>> =
+        callbackFlow {
         try {
             fireStore.collection(COLLECTION_NAME)
                 .whereGreaterThanOrEqualTo("fullName", name)
@@ -29,7 +30,8 @@ class FirebaseRepositoryImpl @Inject constructor(
                         .mapNotNull { documentSnapshot ->
                             documentSnapshot.toObject(User::class.java)
                         }
-                        .filter { user -> user.id != firebaseAuth.currentUser!!.uid } // Exclude current user
+                        // Exclude current user
+                        .filter { user -> user.id != firebaseAuth.currentUser!!.uid }
                     trySend(Resource.Success(data = users))
                 }
                 .addOnFailureListener { e ->
@@ -41,7 +43,8 @@ class FirebaseRepositoryImpl @Inject constructor(
         awaitClose()
     }
 
-    override fun followUser(id: String): Flow<Resource<Boolean>> = callbackFlow {
+    override fun followUser(id: String): Flow<Resource<Boolean>>
+    = callbackFlow {
         firebaseAuth.currentUser?.let { user ->
             //doc for user
             val userDocument = FirebaseFirestore
@@ -72,6 +75,54 @@ class FirebaseRepositoryImpl @Inject constructor(
                                     .update("following",FieldValue.increment(1))
                                 followingDocument
                                     .update("followers",FieldValue.increment(1))
+                                followingDocument
+                                    .update("followersList",followersList)
+                                trySend(Resource.Success(true))
+                            }.addOnFailureListener {
+                                trySend(Resource.Error(it.message!!))
+                            }
+                    } else {
+                        trySend(Resource.Success(true))
+                    }
+                }.addOnFailureListener {
+                    trySend(Resource.Error(it.message!!))
+                }
+        }
+        awaitClose()
+    }
+
+    override fun unfollowUser(id: String): Flow<Resource<Boolean>>
+            = callbackFlow {
+        firebaseAuth.currentUser?.let { user ->
+            //doc for user
+            val userDocument = FirebaseFirestore
+                .getInstance()
+                .collection("users")
+                .document(user.uid)
+            //doc for the following
+            val followingDocument = FirebaseFirestore
+                .getInstance()
+                .collection("users")
+                .document(id)
+
+            userDocument
+                .get()
+                .addOnSuccessListener { snapshot ->
+                    //2 docs to update the user and the following
+                    val followingList =
+                        snapshot["followingList"] as? MutableList<String> ?: mutableListOf()
+                    val followersList =
+                        snapshot["followersList"] as? MutableList<String> ?: mutableListOf()
+                    if (followingList.contains(id)) {
+                        followingList.remove(id)
+                        userDocument
+                            .update("followingList", followingList)
+                            .addOnSuccessListener {
+                                followersList.remove(user.uid)
+                                userDocument
+                                    .update("following",FieldValue.increment(-1))
+                                followingDocument
+                                    .update("followers",FieldValue.increment(-1))
                                 followingDocument
                                     .update("followersList",followersList)
                                 trySend(Resource.Success(true))

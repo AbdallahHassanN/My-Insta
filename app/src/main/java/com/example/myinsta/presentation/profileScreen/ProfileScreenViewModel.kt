@@ -23,7 +23,6 @@ class ProfileScreenViewModel
 @Inject constructor(
     private val firebaseGetUserIdUseCase: FirebaseGetUserIdUseCase,
     private val firebaseGetUserInfoUseCase: FirebaseGetUserInfoUseCase,
-    private val firebaseFollowUser: FirebaseFollowUser
 ) : ViewModel() {
     private val _userId = MutableStateFlow<String?>(null)
     val userId = _userId.asStateFlow()
