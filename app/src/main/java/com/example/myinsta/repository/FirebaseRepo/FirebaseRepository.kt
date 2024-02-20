@@ -21,6 +21,7 @@ interface FirebaseRepository {
 
     fun getFollowersInfo(ids: String)
             : Flow<Resource<List<User>>>
+
     fun getFollowingListIds(id: String)
             : Flow<Resource<List<String>>>
 
@@ -28,10 +29,15 @@ interface FirebaseRepository {
             : Flow<Resource<List<User>>>
 
     fun createPost(
-        postId:String,
+        postId: String,
         postDescription: String,
         userId: String,
         userName: String,
-        imageUrl:Uri
+        imageUrl: String
     ): Flow<Resource<Boolean>>
+
+    fun getAllPostsListIds(id: String)
+            : Flow<Resource<List<String>>>
+    fun getAllPostsInfo(ids: String)
+            :  Flow<Resource<Post>>
 }

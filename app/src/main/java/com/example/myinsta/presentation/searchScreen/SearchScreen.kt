@@ -11,7 +11,7 @@ import androidx.navigation.NavController
 import com.example.myinsta.common.Constants.TAG
 import com.example.myinsta.components.SearchAppBar
 import com.example.myinsta.components.BottomNavigation
-import com.example.recipescompose.presentation.components.UserList
+import com.example.myinsta.common.UserList
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable

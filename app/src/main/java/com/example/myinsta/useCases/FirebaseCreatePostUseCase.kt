@@ -20,7 +20,7 @@ class FirebaseCreatePostUseCase @Inject constructor(
         postDescription: String,
         userId: String,
         userName: String,
-        imageUrl: Uri
+        imageUrl: String
     ) = repo
         .createPost(
             postId = postId,

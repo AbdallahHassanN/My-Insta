@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Log
+import androidx.core.net.toUri
 import com.example.myinsta.common.Constants.COLLECTION_USERS
 import com.example.myinsta.common.Constants.COLLECTION_POSTS
 import com.example.myinsta.common.Constants.ERROR
@@ -15,14 +16,19 @@ import com.example.myinsta.common.uploadCompressedImage
 import com.example.myinsta.models.Post
 import com.example.myinsta.models.User
 import com.example.myinsta.response.Resource
+import com.google.android.gms.tasks.Task
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -36,31 +42,66 @@ class FirebaseRepositoryImpl @Inject constructor(
     private val storage: FirebaseStorage,
     private val appContext: Context
 ) : FirebaseRepository {
-    override fun getUsersByName(name: String): Flow<Resource<List<User>>> =
+
+    fun <T> Task<T>.asFlow(): Flow<Resource<T>> =
         callbackFlow {
             try {
-                fireStore.collection(COLLECTION_USERS)
-                    .whereGreaterThanOrEqualTo("fullName", name)
-                    .whereLessThanOrEqualTo("fullName", "${name}\uF7FF")
-                    .get()
-                    .addOnSuccessListener { querySnapshot ->
-                        val users = querySnapshot
-                            .documents
-                            .mapNotNull { documentSnapshot ->
-                                documentSnapshot.toObject(User::class.java)
-                            }
-                            // Exclude current user
-                            .filter { user -> user.id != firebaseAuth.currentUser!!.uid }
-                        trySend(Resource.Success(data = users))
-                    }
-                    .addOnFailureListener { e ->
-                        trySend(Resource.Error(e.message ?: ERROR))
-                    }
+                addOnSuccessListener {
+                    trySend(Resource.Success(it as T))
+                }.addOnFailureListener { e ->
+                    trySend(Resource.Error(e.message ?: ERROR))
+                }
             } catch (e: Exception) {
                 trySend(Resource.Error(message = e.localizedMessage ?: ERROR))
             }
             awaitClose()
         }
+
+    override fun getUsersByName(name: String): Flow<Resource<List<User>>> =
+        fireStore.collection(COLLECTION_USERS)
+            .whereGreaterThanOrEqualTo("fullName", name)
+            .whereLessThanOrEqualTo("fullName", "${name}\uF7FF")
+            .get()
+            .asFlow()
+            .map {
+                if (it.data != null) {
+                    val users = it.data
+                        .documents
+                        .mapNotNull { documentSnapshot ->
+                            documentSnapshot.toObject(User::class.java)
+                        }
+                        // Exclude current user
+                        .filter { user -> user.id != firebaseAuth.currentUser!!.uid }
+                    Resource.Success(data = users)
+                } else {
+                    Resource.Error(it.message ?: ERROR)
+                }
+            }
+    /*=
+    callbackFlow {
+        try {
+            fireStore.collection(COLLECTION_USERS)
+                .whereGreaterThanOrEqualTo("fullName", name)
+                .whereLessThanOrEqualTo("fullName", "${name}\uF7FF")
+                .get()
+                .addOnSuccessListener { querySnapshot ->
+                    val users = querySnapshot
+                        .documents
+                        .mapNotNull { documentSnapshot ->
+                            documentSnapshot.toObject(User::class.java)
+                        }
+                        // Exclude current user
+                        .filter { user -> user.id != firebaseAuth.currentUser!!.uid }
+                    trySend(Resource.Success(data = users))
+                }
+                .addOnFailureListener { e ->
+                    trySend(Resource.Error(e.message ?: ERROR))
+                }
+        } catch (e: Exception) {
+            trySend(Resource.Error(message = e.localizedMessage ?: ERROR))
+        }
+        awaitClose()
+    }*/
 
     override fun followUser(id: String): Flow<Resource<Boolean>> = callbackFlow {
         firebaseAuth.currentUser?.let { user ->
@@ -241,7 +282,7 @@ class FirebaseRepositoryImpl @Inject constructor(
         postDescription: String,
         userId: String,
         userName: String,
-        imageUrl: Uri
+        imageUrl: String
     ): Flow<Resource<Boolean>> = callbackFlow {
         trySend(Resource.Loading(true))
         try {
@@ -289,7 +330,7 @@ class FirebaseRepositoryImpl @Inject constructor(
                             // Launch a coroutine to upload the image
                             launch {
                                 try {
-                                    uploadImagePost(imageUrl, postId)
+                                    uploadImagePost(imageUrl.toUri(), postId)
                                     trySend(Resource.Success(true))
                                 } catch (e: Exception) {
                                     trySend(Resource.Error(e.message ?: ERROR))
@@ -308,9 +349,51 @@ class FirebaseRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun getAllPostsListIds(id: String): Flow<Resource<List<String>>> = callbackFlow {
+        try {
+            fireStore
+                .collection(COLLECTION_USERS)
+                .document(id)
+                .get()
+                .addOnSuccessListener { documentSnapshot ->
+                    val postsIdList = documentSnapshot.get("postsId") as? List<String>
+                    Log.d(TAG, "ids in impl$postsIdList")
+                    trySend(Resource.Success(data = postsIdList!!))
+                }
+        } catch (e: Exception) {
+            trySend(Resource.Error(message = e.localizedMessage ?: ERROR))
+        }
+        awaitClose()
+    }
+
+    override fun getAllPostsInfo(ids: String): Flow<Resource<Post>> = callbackFlow {
+        try {
+            fireStore
+                .collection(COLLECTION_POSTS)
+                // userid = id
+                .whereEqualTo("postId", ids)
+                .get()
+                .addOnSuccessListener { querySnapshot ->
+                    val posts = querySnapshot
+                        .documents
+                        .mapNotNull { documentSnapshot ->
+                            documentSnapshot.toObject(Post::class.java)
+                        }
+                    Log.d(TAG, "posts in impl$posts")
+                    trySend(Resource.Success(data = posts.first()))
+                }
+                .addOnFailureListener { e ->
+                    trySend(Resource.Error(e.message ?: ERROR))
+                }
+        } catch (e: Exception) {
+            trySend(Resource.Error(message = e.localizedMessage ?: ERROR))
+        }
+        awaitClose()
+    }
+
     private suspend fun uploadImagePost(uri: Uri, path: String) {
         try {
-            val compressedImageUri = compressImage(uri,appContext)
+            val compressedImageUri = compressImage(uri, appContext)
             val success = uploadCompressedImage(
                 compressedImageUri,
                 path,

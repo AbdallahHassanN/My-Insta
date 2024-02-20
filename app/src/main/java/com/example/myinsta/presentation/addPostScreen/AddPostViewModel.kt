@@ -69,7 +69,7 @@ class AddPostViewModel
         postDescription: String,
         userId: String,
         userName: String,
-        imageUrl:Uri
+        imageUrl:String
     ) {
         viewModelScope.launch {
             val postId = UUID.randomUUID().toString()

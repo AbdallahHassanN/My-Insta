@@ -128,7 +128,7 @@ fun ConfirmPostScreen(
                     postDescription = caption,
                     userId = userId!!,
                     userName = username,
-                    imageUrl =  imagePath.toUri()
+                    imageUrl =  imagePath
                 )
         }
     }
