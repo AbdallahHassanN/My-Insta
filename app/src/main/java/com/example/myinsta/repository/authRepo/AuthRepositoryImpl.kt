@@ -8,6 +8,8 @@ import com.example.myinsta.common.Constants.COLLECTION_USERS
 import com.example.myinsta.common.Constants.ERROR
 import com.example.myinsta.common.Constants.USER_NOT_LOGGED
 import com.example.myinsta.common.await
+import com.example.myinsta.common.compressImage
+import com.example.myinsta.common.uploadCompressedImage
 import com.example.myinsta.models.User
 import com.example.myinsta.response.Resource
 import com.google.firebase.auth.FirebaseAuth
@@ -210,8 +212,12 @@ class AuthRepositoryImpl @Inject constructor(
             : Flow<Resource<Boolean>> = callbackFlow {
         trySend(Resource.Loading(true))
         try {
-            val compressedImageUri = compressImage(uri)
-            val success = uploadCompressedImage(compressedImageUri, path)
+            val compressedImageUri = compressImage(uri,appContext)
+            val success = uploadCompressedImage(
+                compressedImageUri,
+                path,
+                storage
+            )
             if (success) {
                 storage.getReference(path).downloadUrl.addOnSuccessListener {
                     firebaseAuth.currentUser?.let { user ->
@@ -236,27 +242,5 @@ class AuthRepositoryImpl @Inject constructor(
         }
         trySend(Resource.Loading(false))
         awaitClose()
-    }
-
-    private fun compressImage(uri: Uri)
-            : Uri {
-        val bitmap = BitmapFactory.decodeStream(appContext.contentResolver.openInputStream(uri))
-        val outputStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, outputStream)
-        val compressedImageFile = File(appContext.cacheDir, "temp_image.jpg")
-        val compressedOutputStream = FileOutputStream(compressedImageFile)
-        compressedOutputStream.write(outputStream.toByteArray())
-        compressedOutputStream.close()
-        return Uri.fromFile(compressedImageFile)
-    }
-
-    private suspend fun uploadCompressedImage(compressedImageUri: Uri, path: String)
-            : Boolean {
-        return try {
-            storage.getReference(path).putFile(compressedImageUri).await()
-            true
-        } catch (e: Exception) {
-            false
-        }
     }
 }
