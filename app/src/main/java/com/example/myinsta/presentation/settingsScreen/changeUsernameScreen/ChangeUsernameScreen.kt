@@ -33,7 +33,6 @@ fun ChangeUsernameScreen(
 ) {
     val viewModel: SettingsScreenViewModel = hiltViewModel()
     val usernameValue by viewModel.username.collectAsStateWithLifecycle()
-    val editUsernameState = viewModel.editUsernameState.collectAsState()
     val snackBarHostState = remember { SnackbarHostState() }
     // Function to show the snackBar
     suspend fun showSnackBar(message: String) {

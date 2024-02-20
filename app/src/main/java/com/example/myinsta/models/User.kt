@@ -13,6 +13,7 @@ data class User(
     val followersList : List<String> = emptyList(),
     val followingList : List<String> = emptyList(),
     val totalPosts: Int = 0,
+    val postsId: List<String> = emptyList(),
     val bio: String = "",
 )
 

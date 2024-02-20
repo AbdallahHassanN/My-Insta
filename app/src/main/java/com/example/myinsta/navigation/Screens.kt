@@ -18,7 +18,7 @@ sealed class Screens(val route:String) {
     object UserScreen:Screens("UserScreen")
     object FollowersListScreen:Screens("FollowersListScreen")
     object FollowingListScreen:Screens("FollowingListScreen")
-
+    object ConfirmPost:Screens("ConfirmPost")
 
     fun withArgs(vararg args:String):String {
         return buildString {

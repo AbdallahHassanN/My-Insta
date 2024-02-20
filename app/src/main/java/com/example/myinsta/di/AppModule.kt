@@ -57,12 +57,16 @@ object AppModule {
     @Singleton
     @Provides
     fun provideUserRepository(
-        firestore: FirebaseFirestore,
         firebaseAuth: FirebaseAuth,
+        firebaseFirestore: FirebaseFirestore,
+        firebaseStorage: FirebaseStorage,
+        @ApplicationContext appContext: Context // Use @ApplicationContext to get the application context
         ): FirebaseRepository {
         return FirebaseRepositoryImpl(
-            firestore,
-            firebaseAuth
+            firebaseAuth,
+            firebaseFirestore,
+            firebaseStorage,
+            appContext
         )
     }
 

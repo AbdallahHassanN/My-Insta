@@ -4,7 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
-import com.example.myinsta.common.Constants.COLLECTION_NAME
+import com.example.myinsta.common.Constants.COLLECTION_USERS
 import com.example.myinsta.common.Constants.ERROR
 import com.example.myinsta.common.Constants.USER_NOT_LOGGED
 import com.example.myinsta.common.await
@@ -48,7 +48,7 @@ class AuthRepositoryImpl @Inject constructor(
         try {
             trySend(Resource.Loading(true))
             val usernameExists =
-                fireStore.collection(COLLECTION_NAME).whereEqualTo("username", username).get()
+                fireStore.collection(COLLECTION_USERS).whereEqualTo("username", username).get()
                     .await().size() > 0
             if (usernameExists) {
                 // Username already exists, return error
@@ -71,9 +71,10 @@ class AuthRepositoryImpl @Inject constructor(
                             password = password,
                             fullName = fullName,
                             followingList = emptyList(),
-                            followersList = emptyList()
+                            followersList = emptyList(),
+                            postsId = emptyList()
                         )
-                        fireStore.collection(COLLECTION_NAME).document(userId).set(userInfo)
+                        fireStore.collection(COLLECTION_USERS).document(userId).set(userInfo)
                             .addOnSuccessListener {
                                 trySend(Resource.Success(firebaseAuth.currentUser))
                             }.addOnFailureListener {
@@ -119,7 +120,7 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override fun getUserInfo(userId: String): Flow<Resource<User?>> = callbackFlow {
-        val snapshotListener = fireStore.collection(COLLECTION_NAME).document(userId)
+        val snapshotListener = fireStore.collection(COLLECTION_USERS).document(userId)
             .addSnapshotListener { snapshot, e ->
                 if (snapshot != null) {
                     val user = snapshot.toObject(User::class.java)
@@ -179,7 +180,7 @@ class AuthRepositoryImpl @Inject constructor(
         callbackFlow {
             trySend(Resource.Loading(true))
             val usernameExists =
-                fireStore.collection(COLLECTION_NAME).whereEqualTo("username", newUsername).get()
+                fireStore.collection(COLLECTION_USERS).whereEqualTo("username", newUsername).get()
                     .await().size() > 0
             if (usernameExists) {
                 trySend(Resource.Error(message = "Username already exists. Please choose a different one."))

@@ -3,8 +3,8 @@ plugins {
     alias(libs.plugins.org.jetbrains.kotlin.android)
     kotlin("kapt")
     alias(libs.plugins.com.google.dagger.hilt.android)
-    //id("com.google.gms.google-services")
     alias(libs.plugins.com.google.gms.google.services)
+    id ("kotlin-parcelize")
 }
 
 android {
