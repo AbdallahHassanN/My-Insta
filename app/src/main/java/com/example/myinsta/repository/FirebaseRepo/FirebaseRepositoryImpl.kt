@@ -10,6 +10,8 @@ import com.example.myinsta.common.Constants.COLLECTION_POSTS
 import com.example.myinsta.common.Constants.ERROR
 import com.example.myinsta.common.Constants.TAG
 import com.example.myinsta.common.await
+import com.example.myinsta.common.compressImage
+import com.example.myinsta.common.uploadCompressedImage
 import com.example.myinsta.models.Post
 import com.example.myinsta.models.User
 import com.example.myinsta.response.Resource
@@ -21,6 +23,7 @@ import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -242,7 +245,6 @@ class FirebaseRepositoryImpl @Inject constructor(
     ): Flow<Resource<Boolean>> = callbackFlow {
         trySend(Resource.Loading(true))
         try {
-            trySend(Resource.Loading(false))
             val postRef = fireStore
                 .collection(COLLECTION_POSTS)
 
@@ -284,16 +286,21 @@ class FirebaseRepositoryImpl @Inject constructor(
                                         FieldValue.increment(1)
                                     )
                             }
-                            trySend(Resource.Success(true))
+                            // Launch a coroutine to upload the image
+                            launch {
+                                try {
+                                    uploadImagePost(imageUrl, postId)
+                                    trySend(Resource.Success(true))
+                                } catch (e: Exception) {
+                                    trySend(Resource.Error(e.message ?: ERROR))
+                                }
+                            }
                         }
-                    trySend(Resource.Success(true))
                 }
-            // Upload image to Firestore Storage and update post document with the image URL
-            uploadImagePost(imageUrl, postId)
-            // Send success response
-            trySend(Resource.Success(true))
+                .addOnFailureListener { e ->
+                    trySend(Resource.Error(e.message ?: ERROR))
+                }
         } catch (e: Exception) {
-            // Handle errors
             trySend(Resource.Error(e.message ?: ERROR))
         } finally {
             trySend(Resource.Loading(isLoading = false))
@@ -303,8 +310,16 @@ class FirebaseRepositoryImpl @Inject constructor(
 
     private suspend fun uploadImagePost(uri: Uri, path: String) {
         try {
-            val compressedImageUri = compressImage(uri)
-            val success = uploadCompressedImage(compressedImageUri, path)
+            val compressedImageUri = compressImage(uri,appContext)
+            val success = uploadCompressedImage(
+                compressedImageUri,
+                path,
+                storage
+            )
+            Log.d(TAG, "is 1 ? $success")
+            Log.d(TAG, "is 2 ? $compressedImageUri")
+            Log.d(TAG, "is 3 ? $path")
+
             if (success) {
                 // Get download URL
                 val downloadUrl = storage.getReference(path).downloadUrl.await()
@@ -318,27 +333,6 @@ class FirebaseRepositoryImpl @Inject constructor(
             }
         } catch (e: Exception) {
             Log.d(TAG, e.message.toString())
-        }
-    }
-
-    private fun compressImage(uri: Uri)
-            : Uri {
-        val bitmap = BitmapFactory.decodeStream(appContext.contentResolver.openInputStream(uri))
-        val outputStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, outputStream)
-        val compressedImageFile = File(appContext.cacheDir, "temp_image.jpg")
-        val compressedOutputStream = FileOutputStream(compressedImageFile)
-        compressedOutputStream.write(outputStream.toByteArray())
-        compressedOutputStream.close()
-        return Uri.fromFile(compressedImageFile)
-    }
-
-    private suspend fun uploadCompressedImage(compressedImageUri: Uri, path: String): Boolean {
-        return try {
-            storage.getReference(path).putFile(compressedImageUri).await()
-            true
-        } catch (e: Exception) {
-            false
         }
     }
 }

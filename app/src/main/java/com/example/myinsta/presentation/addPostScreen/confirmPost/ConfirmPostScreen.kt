@@ -50,14 +50,13 @@ fun ConfirmPostScreen(
     navController: NavController
 ) {
     val viewModel: AddPostViewModel = hiltViewModel()
-    val viewModel2: ProfileScreenViewModel = hiltViewModel()
     val caption by viewModel.caption.collectAsStateWithLifecycle()
-    val userId by viewModel2.userId.collectAsStateWithLifecycle()
-    val userInfo by viewModel2.userInfo.collectAsStateWithLifecycle()
+    val userId by viewModel.userId.collectAsStateWithLifecycle()
+    val userInfo by viewModel.userInfo.collectAsStateWithLifecycle()
     var username: String = ""
 
     LaunchedEffect(key1 = userId, block = {
-        viewModel2.getUserInfo(userId!!)
+        viewModel.getUserInfo(userId!!)
     })
     LaunchedEffect(true) {
         viewModel.postState.collect { state ->
