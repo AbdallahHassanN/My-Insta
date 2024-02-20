@@ -18,7 +18,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.myinsta.presentation.userScreen.UserScreenViewModel
 import com.example.myinsta.ui.theme.QuickSandTypography
-import com.example.recipescompose.presentation.components.UserList
+import com.example.myinsta.common.UserList
 
 @SuppressLint("StateFlowValueCalledInComposition", "UnusedMaterial3ScaffoldPaddingParameter")
 @Composable

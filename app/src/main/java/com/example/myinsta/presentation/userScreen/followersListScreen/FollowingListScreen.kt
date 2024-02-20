@@ -1,7 +1,6 @@
 package com.example.myinsta.presentation.userScreen.followersListScreen
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -17,10 +16,9 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.example.myinsta.common.Constants.TAG
 import com.example.myinsta.presentation.userScreen.UserScreenViewModel
 import com.example.myinsta.ui.theme.QuickSandTypography
-import com.example.recipescompose.presentation.components.UserList
+import com.example.myinsta.common.UserList
 
 @SuppressLint("StateFlowValueCalledInComposition", "UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
