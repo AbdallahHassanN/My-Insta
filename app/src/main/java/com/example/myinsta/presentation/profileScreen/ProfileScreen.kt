@@ -44,7 +44,6 @@ import com.example.navapp.Screens
 
 @Composable
 fun ProfileScreen(
-    //id: String,
     navController: NavController
 ) {
     val viewModel: ProfileScreenViewModel = hiltViewModel()

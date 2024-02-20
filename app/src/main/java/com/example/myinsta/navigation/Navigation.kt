@@ -9,12 +9,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.myinsta.common.Constants.IMAGE_PATH
 import com.example.myinsta.common.Constants.USER_ID
 import com.example.myinsta.presentation.chatScreen.ChatScreen
 import com.example.myinsta.presentation.settingsScreen.changeNameScreen.ChangeNameScreen
 import com.example.myinsta.presentation.settingsScreen.changeNameScreen.ChangeUsernameScreen
 import com.example.myinsta.presentation.settingsScreen.SettingsScreen
 import com.example.myinsta.presentation.addPostScreen.AddPostScreen
+import com.example.myinsta.presentation.addPostScreen.confirmPost.ConfirmPostScreen
 import com.example.myinsta.presentation.feedScreen.FeedScreen
 import com.example.myinsta.presentation.mainScreen.MainScreen
 import com.example.myinsta.presentation.notificationScreen.NotificationScreen
@@ -88,6 +90,13 @@ fun Navigation() {
         }
         composable(route = Screens.ChatScreen.route) {
             ChatScreen()
+        }
+        composable(
+            route = Screens.ConfirmPost.route + "/{$IMAGE_PATH}",
+            arguments = listOf(navArgument(IMAGE_PATH) { type = NavType.StringType })
+        ) { backStackEntry ->
+            val imagePath = backStackEntry.arguments?.getString(IMAGE_PATH) ?: ""
+            ConfirmPostScreen(imagePath = imagePath, navController = navController)
         }
     }
 }

@@ -1,5 +1,7 @@
 package com.example.myinsta.repository.FirebaseRepo
 
+import android.net.Uri
+import com.example.myinsta.models.Post
 import com.example.myinsta.models.User
 import com.example.myinsta.response.Resource
 import kotlinx.coroutines.flow.Flow
@@ -25,4 +27,11 @@ interface FirebaseRepository {
     fun getFollowingInfo(ids: String)
             : Flow<Resource<List<User>>>
 
+    fun createPost(
+        postId:String,
+        postDescription: String,
+        userId: String,
+        userName: String,
+        imageUrl:Uri
+    ): Flow<Resource<Boolean>>
 }

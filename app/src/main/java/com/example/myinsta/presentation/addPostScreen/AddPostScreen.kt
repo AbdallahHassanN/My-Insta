@@ -2,6 +2,7 @@ package com.example.myinsta.presentation.addPostScreen
 
 import android.annotation.SuppressLint
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material3.Scaffold
@@ -12,9 +13,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
+import com.example.myinsta.common.Constants.TAG
 import com.example.myinsta.common.isStoragePermissionGranted
 import com.example.myinsta.common.pickFromGallery
 import com.example.myinsta.components.BottomNavigation
+import com.example.navapp.Screens
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -30,12 +33,11 @@ fun AddPostScreen(
             .GetContent()
     ) { uri: Uri? ->
         if (uri != null) {
-            /*TODO*/
+            navController.navigate(Screens.ConfirmPost.withArgs(Uri.encode(uri.toString())))
         } else {
             navController.popBackStack()
         }
     }
-
 
     DisposableEffect(Unit) {
         // Request permission if not granted
