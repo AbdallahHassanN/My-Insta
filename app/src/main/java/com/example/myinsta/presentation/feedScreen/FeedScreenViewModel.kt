@@ -6,16 +6,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myinsta.common.Constants
 import com.example.myinsta.common.Constants.TAG
-import com.example.myinsta.common.validator.EmptyValidator
 import com.example.myinsta.common.validator.ValidateResult
+import com.example.myinsta.models.Comment
 import com.example.myinsta.models.Post
 import com.example.myinsta.models.User
-import com.example.myinsta.presentation.profileScreen.ProfileScreenViewModel
 import com.example.myinsta.response.Resource
+import com.example.myinsta.useCases.FirebaseAddCommentUseCase
+import com.example.myinsta.useCases.FirebaseGetCommentsUseCase
 import com.example.myinsta.useCases.FirebaseGetFollowingInfoUseCase
 import com.example.myinsta.useCases.FirebaseGetFollowingListIds
-import com.example.myinsta.useCases.FirebaseGetPostsInfoUseCase
-import com.example.myinsta.useCases.FirebaseGetPostsListIds
+import com.example.myinsta.useCases.FirebaseGetPostUseCase
 import com.example.myinsta.useCases.FirebaseGetUserIdUseCase
 import com.example.myinsta.useCases.FirebaseGetUserInfoUseCase
 import com.example.myinsta.useCases.FirebaseGetUsersPostsUseCase
@@ -26,9 +26,6 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.single
-import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -39,7 +36,10 @@ class FeedScreenViewModel
     private val firebaseGetFollowingInfoUseCase: FirebaseGetFollowingInfoUseCase,
     private val firebaseGetFollowingListIds: FirebaseGetFollowingListIds,
     private val firebaseGetUserInfoUseCase: FirebaseGetUserInfoUseCase,
-    private val firebaseGetUsersPostsUseCase: FirebaseGetUsersPostsUseCase
+    private val firebaseGetUsersPostsUseCase: FirebaseGetUsersPostsUseCase,
+    private val firebaseAddCommentUseCase: FirebaseAddCommentUseCase,
+    private val firebaseGetPostUseCase: FirebaseGetPostUseCase,
+    private val firebaseGetCommentsUseCase: FirebaseGetCommentsUseCase
 ) : ViewModel() {
 
     private val _currentUserId = MutableStateFlow<String>("")
@@ -49,17 +49,24 @@ class FeedScreenViewModel
     val userInfo = _userInfo.asStateFlow()
 
     private val _followingIdsList = MutableStateFlow<List<String>>(emptyList())
-    val followingIdsList = _followingIdsList.asStateFlow()
 
     private val _followingList = MutableStateFlow<List<User>>(emptyList())
     val followingList = _followingList.asStateFlow()
 
+    private val _userName = MutableStateFlow<String>("")
+    val userName = _userName.asStateFlow()
+
     private val _postsList = MutableStateFlow<List<Post?>>(emptyList())
     val postsList = _postsList.asStateFlow()
-    private val _postsIdsList = MutableStateFlow<List<String>>(emptyList())
+
+    private val _commentsList = MutableStateFlow<List<Comment?>>(emptyList())
+    val commentsList = _commentsList.asStateFlow()
 
     private val _commentValue = MutableStateFlow("")
     val commentValue = _commentValue.asStateFlow()
+
+    private val _postData = MutableStateFlow<Post?>(null)
+    val postData = _postData.asStateFlow()
 
     val commentValidation = mutableStateOf<ValidateResult?>(null)
 
@@ -68,6 +75,7 @@ class FeedScreenViewModel
     init {
         firebaseGetUserIdUseCase.execute()?.let {
             _currentUserId.value = it.uid
+            _userName.value = it.displayName.toString()
         }
         viewModelScope.launch {
             _followingIdsList.collect {
@@ -79,26 +87,53 @@ class FeedScreenViewModel
     fun getUsersDataOfFollowing() = viewModelScope.launch {
         getFollowingListIds(_currentUserId.value)
         getFollowingList(_followingIdsList.value).apply {
-            getUsersPosts(_followingIdsList.value).apply {
-
-            }
+            getUsersPosts(_followingIdsList.value)
         }
     }
-    fun getUsersPosts(idsList: List<String>) {
+
+    fun getComments(postId: String) {
         viewModelScope.launch {
-            firebaseGetUsersPostsUseCase.execute(idsList).collect { it ->
-                when (it) {
+            firebaseGetCommentsUseCase.execute(postId)
+                .collect {response ->
+                    when (response) {
+                        is Resource.Error -> {
+                            loading.value = false
+                            Log.d(TAG, "ERROR")
+                        }
+
+                        is Resource.Loading -> {
+                            loading.value = true
+                            Log.d(TAG, "Loading")
+                        }
+
+                        is Resource.Success -> {
+                            loading.value = false
+                            _commentsList.value = response.data!!.sortedByDescending {
+                                it.time
+                            }
+                        }
+                    }
+                }
+        }
+    }
+
+    private fun getUsersPosts(idsList: List<String>) {
+        viewModelScope.launch {
+            firebaseGetUsersPostsUseCase.execute(idsList).collect { response ->
+                when (response) {
                     is Resource.Error -> {
                         loading.value = false
                         Log.d(TAG, "ERROR")
                     }
+
                     is Resource.Loading -> {
                         loading.value = true
                         Log.d(TAG, "Loading")
                     }
+
                     is Resource.Success -> {
                         loading.value = false
-                        _postsList.value = it.data!!.sortedByDescending {
+                        _postsList.value = response.data!!.sortedByDescending {
                             it.time
                         }
                     }
@@ -147,9 +182,44 @@ class FeedScreenViewModel
                 }
         }
     }
-    fun onCommentChanged(newQuery: String) {
-        _commentValue.value = newQuery
-    }
-    private fun validateComment() = EmptyValidator(_commentValue.value).validate()
 
+    fun getPost(postId: String) = viewModelScope.launch {
+        firebaseGetPostUseCase.execute(postId).collect {
+            _postData.value = it.data
+        }
+    }
+    fun addComment(
+        postId: String,
+        comment: String,
+        userId: String,
+        authorName: String,
+    ) {
+        viewModelScope.launch {
+            firebaseAddCommentUseCase
+                .execute(
+                    postId,
+                    comment,
+                    userId,
+                    authorName
+                )
+                .collect { response ->
+                    when (response) {
+                        is Resource.Error -> {
+                            loading.value = false
+                            Log.d(TAG, Constants.ERROR)
+                        }
+
+                        is Resource.Loading -> {
+                            loading.value = true
+                            Log.d(TAG, "Loading")
+                        }
+
+                        is Resource.Success -> {
+                            Log.d(TAG, "Success")
+                            loading.value = false
+                        }
+                    }
+                }
+        }
+    }
 }

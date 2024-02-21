@@ -10,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.myinsta.common.Constants.IMAGE_PATH
+import com.example.myinsta.common.Constants.POST_ID
 import com.example.myinsta.common.Constants.USER_ID
 import com.example.myinsta.presentation.chatScreen.ChatScreen
 import com.example.myinsta.presentation.settingsScreen.changeNameScreen.ChangeNameScreen
@@ -18,6 +19,7 @@ import com.example.myinsta.presentation.settingsScreen.SettingsScreen
 import com.example.myinsta.presentation.addPostScreen.AddPostScreen
 import com.example.myinsta.presentation.addPostScreen.confirmPost.ConfirmPostScreen
 import com.example.myinsta.presentation.feedScreen.FeedScreen
+import com.example.myinsta.presentation.feedScreen.addCommentScreen.AddCommentScreen
 import com.example.myinsta.presentation.mainScreen.MainScreen
 import com.example.myinsta.presentation.notificationScreen.NotificationScreen
 import com.example.myinsta.presentation.profileScreen.ProfileScreen
@@ -97,6 +99,13 @@ fun Navigation() {
         ) { backStackEntry ->
             val imagePath = backStackEntry.arguments?.getString(IMAGE_PATH) ?: ""
             ConfirmPostScreen(imagePath = imagePath, navController = navController)
+        }
+        composable(
+            route = Screens.AddCommentScreen.route + "/{$POST_ID}",
+            arguments = listOf(navArgument(POST_ID) { type = NavType.StringType })
+        ) { backStackEntry ->
+            val postId = backStackEntry.arguments?.getString(POST_ID) ?: ""
+            AddCommentScreen(postId = postId, navController = navController)
         }
     }
 }

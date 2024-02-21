@@ -1,6 +1,7 @@
 package com.example.myinsta.repository.FirebaseRepo
 
 import android.net.Uri
+import com.example.myinsta.models.Comment
 import com.example.myinsta.models.Post
 import com.example.myinsta.models.User
 import com.example.myinsta.response.Resource
@@ -44,4 +45,14 @@ interface FirebaseRepository {
 
     fun getUsersPosts(idList: List<String>)
             : Flow<Resource<List<Post>>>
+
+    fun addComment(postId: String, comment: String, userId: String, authorName: String)
+            : Flow<Resource<Boolean>>
+
+    fun getPost(postId: String)
+            : Flow<Resource<Post>>
+
+    fun getPostComments(postId: String)
+            : Flow<Resource<List<Comment>>>
+
 }
