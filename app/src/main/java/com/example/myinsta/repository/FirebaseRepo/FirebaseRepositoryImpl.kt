@@ -8,6 +8,7 @@ import com.example.myinsta.common.Constants.COLLECTION_USERS
 import com.example.myinsta.common.Constants.COLLECTION_POSTS
 import com.example.myinsta.common.Constants.ERROR
 import com.example.myinsta.common.Constants.TAG
+import com.example.myinsta.common.Constants.USER_ID
 import com.example.myinsta.common.await
 import com.example.myinsta.common.compressImage
 import com.example.myinsta.common.uploadCompressedImage
@@ -378,6 +379,31 @@ class FirebaseRepositoryImpl @Inject constructor(
                 }
         } catch (e: Exception) {
             trySend(Resource.Error(message = e.localizedMessage ?: ERROR))
+        }
+        awaitClose()
+    }
+
+    override fun getUsersPosts(idList: List<String>): Flow<Resource<List<Post>>>
+    = callbackFlow {
+        if(idList.isNotEmpty()) {
+            trySend(Resource.Loading(isLoading = true))
+            val snapshotListener =
+                fireStore.collection(COLLECTION_POSTS)
+                    .whereIn(USER_ID, idList)
+                    .addSnapshotListener { snapshot, e ->
+                        if (snapshot != null) {
+                            val postList = snapshot.toObjects(Post::class.java)
+                            trySend(Resource.Success(data = postList))
+                        } else {
+                            trySend(Resource.Error(e?.message ?: ERROR))
+                        }
+                    }
+            trySend(Resource.Loading(isLoading = false))
+            awaitClose {
+                snapshotListener.remove()
+            }
+        }else{
+            trySend(Resource.Success(emptyList()))
         }
         awaitClose()
     }

@@ -38,6 +38,10 @@ interface FirebaseRepository {
 
     fun getAllPostsListIds(id: String)
             : Flow<Resource<List<String>>>
+
     fun getAllPostsInfo(ids: String)
-            :  Flow<Resource<Post>>
+            : Flow<Resource<Post>>
+
+    fun getUsersPosts(idList: List<String>)
+            : Flow<Resource<List<Post>>>
 }

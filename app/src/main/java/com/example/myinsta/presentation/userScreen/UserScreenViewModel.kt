@@ -26,6 +26,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.zip
@@ -80,7 +81,30 @@ class UserScreenViewModel
         firebaseGetUserIdUseCase.execute()?.let { user ->
             _currentUserId.value = user.uid
             getFlows(_userId.value.toString())
+            getUserInfo(_userId.value.toString())
             Log.d(TAG, "user2 in viewmodel ${_userId.value}")
+        }
+    }
+    fun getUserInfo(id: String) = viewModelScope.launch {
+        firebaseGetUserInfoUseCase.execute(
+            userId = id
+        ).catch {
+            Log.d(TAG, "Error ${it.message}")
+        }.collect { response ->
+            when (response) {
+                is Resource.Error -> {
+                    Log.d(TAG, "Error response")
+                }
+
+                is Resource.Loading -> {
+                    Log.d(TAG, "Loading")
+                }
+
+                is Resource.Success -> {
+                    _userInfo.value = response.data ?: User()
+                    _followState.value = true
+                }
+            }
         }
     }
 
