@@ -9,6 +9,8 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun CustomDivider(){
-    Divider(thickness = 1.dp, color = Color.Black, modifier = Modifier.padding(top = 5.dp))
+    Divider(
+        thickness = 1.dp,
+        color = Color.Black, modifier = Modifier.padding(top = 10.dp))
 
 }

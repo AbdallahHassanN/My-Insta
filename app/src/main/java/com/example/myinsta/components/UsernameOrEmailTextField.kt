@@ -37,7 +37,7 @@ fun UsernameOrEmailTextField(
             .padding(
                 top = 20.dp,
                 end = 20.dp,
-                start = 20.dp
+                start = 20.dp,
             ),
         label = {
             Text(text = label)

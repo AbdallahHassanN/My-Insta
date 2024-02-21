@@ -55,6 +55,9 @@ fun UserScreen(
         viewModel.getFlows(id)
     })
     LaunchedEffect(key1 = id, block = {
+        viewModel.getUserInfo(id)
+    })
+    LaunchedEffect(key1 = id, block = {
         viewModel.getAllPostsListIds(id)
     })
     if (userInfo != null) {
