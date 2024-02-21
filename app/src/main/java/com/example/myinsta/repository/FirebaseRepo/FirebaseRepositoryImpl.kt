@@ -1,8 +1,6 @@
 package com.example.myinsta.repository.FirebaseRepo
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Log
 import androidx.core.net.toUri
@@ -21,18 +19,12 @@ import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.FileOutputStream
 import javax.inject.Inject
 
 
@@ -356,9 +348,9 @@ class FirebaseRepositoryImpl @Inject constructor(
                 .document(id)
                 .get()
                 .addOnSuccessListener { documentSnapshot ->
-                    val postsIdList = documentSnapshot.get("postsId") as? List<String>
+                    val postsIdList = documentSnapshot.get("postsId") as? List<String> ?: emptyList()
                     Log.d(TAG, "ids in impl$postsIdList")
-                    trySend(Resource.Success(data = postsIdList!!))
+                    trySend(Resource.Success(data = postsIdList))
                 }
         } catch (e: Exception) {
             trySend(Resource.Error(message = e.localizedMessage ?: ERROR))
@@ -370,7 +362,6 @@ class FirebaseRepositoryImpl @Inject constructor(
         try {
             fireStore
                 .collection(COLLECTION_POSTS)
-                // userid = id
                 .whereEqualTo("postId", ids)
                 .get()
                 .addOnSuccessListener { querySnapshot ->

@@ -16,7 +16,6 @@ import com.example.myinsta.useCases.FirebaseGetUserInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.zip
@@ -40,20 +39,22 @@ class ProfileScreenViewModel
     private val _postsList = MutableStateFlow<List<Post>>(emptyList())
     val postsList = _postsList.asStateFlow()
     private val _postsIdsList = MutableStateFlow<List<String>>(emptyList())
-    val postsIdsList = _postsIdsList.asStateFlow()
     val loading = mutableStateOf(false)
+
     data class UserDataWrapper(
         val t1: Resource<User?>,
         val t2: Resource<List<String>>,
         val t3: MutableList<Post> = mutableListOf()
     )
+
     init {
         firebaseGetUserIdUseCase.execute()?.let { user ->
             _userId.value = user.uid
             getFlows(userId.value.toString())
         }
     }
-    private fun getFlows(id: String) = viewModelScope.launch {
+
+    fun getFlows(id: String) = viewModelScope.launch {
         firebaseGetUserInfoUseCase.execute(
             userId = id
         ).zip(
@@ -77,33 +78,13 @@ class ProfileScreenViewModel
                 _userInfo.value = response.t1.data ?: User()
                 _postsList.value = response.t3
                 loading.value = false
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 e.localizedMessage ?: Constants.ERROR
                 loading.value = false
             }
         }
     }
-    fun getUserInfo(id: String) = viewModelScope.launch {
-        firebaseGetUserInfoUseCase.execute(
-            userId = id
-        ).catch {
-            Log.d(TAG, "Error ${it.message}")
-        }.collect { response ->
-            when (response) {
-                is Resource.Error -> {
-                    Log.d(TAG, "Error response")
-                }
 
-                is Resource.Loading -> {
-                    Log.d(TAG, "Loading")
-                }
-
-                is Resource.Success -> {
-                    _userInfo.value = response.data ?: User()
-                }
-            }
-        }
-    }
     fun getAllPostsListIds(id: String) {
         viewModelScope.launch {
             firebaseGetPostsListIds
