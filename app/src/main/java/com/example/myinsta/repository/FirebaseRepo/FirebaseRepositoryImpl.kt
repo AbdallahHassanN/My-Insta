@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import androidx.core.net.toUri
+import com.example.myinsta.common.Constants.COLLECTION_COMMENTS
 import com.example.myinsta.common.Constants.COLLECTION_USERS
 import com.example.myinsta.common.Constants.COLLECTION_POSTS
 import com.example.myinsta.common.Constants.ERROR
@@ -12,6 +13,7 @@ import com.example.myinsta.common.Constants.USER_ID
 import com.example.myinsta.common.await
 import com.example.myinsta.common.compressImage
 import com.example.myinsta.common.uploadCompressedImage
+import com.example.myinsta.models.Comment
 import com.example.myinsta.models.Post
 import com.example.myinsta.models.User
 import com.example.myinsta.response.Resource
@@ -349,7 +351,8 @@ class FirebaseRepositoryImpl @Inject constructor(
                 .document(id)
                 .get()
                 .addOnSuccessListener { documentSnapshot ->
-                    val postsIdList = documentSnapshot.get("postsId") as? List<String> ?: emptyList()
+                    val postsIdList =
+                        documentSnapshot.get("postsId") as? List<String> ?: emptyList()
                     Log.d(TAG, "ids in impl$postsIdList")
                     trySend(Resource.Success(data = postsIdList))
                 }
@@ -383,9 +386,8 @@ class FirebaseRepositoryImpl @Inject constructor(
         awaitClose()
     }
 
-    override fun getUsersPosts(idList: List<String>): Flow<Resource<List<Post>>>
-    = callbackFlow {
-        if(idList.isNotEmpty()) {
+    override fun getUsersPosts(idList: List<String>): Flow<Resource<List<Post>>> = callbackFlow {
+        if (idList.isNotEmpty()) {
             trySend(Resource.Loading(isLoading = true))
             val snapshotListener =
                 fireStore.collection(COLLECTION_POSTS)
@@ -402,10 +404,79 @@ class FirebaseRepositoryImpl @Inject constructor(
             awaitClose {
                 snapshotListener.remove()
             }
-        }else{
+        } else {
             trySend(Resource.Success(emptyList()))
         }
         awaitClose()
+    }
+
+    override fun addComment(
+        postId: String,
+        comment: String,
+        userId: String,
+        authorName: String
+    ): Flow<Resource<Boolean>> = callbackFlow {
+        try {
+            trySend(Resource.Loading(isLoading = true))
+            val doc = fireStore.collection(COLLECTION_POSTS).document(postId)
+                .collection(COLLECTION_COMMENTS).document()
+
+            val newComment = Comment(
+                commentId = doc.id,
+                comment = comment,
+                userId = userId,
+                authorName = authorName,
+                time = Timestamp.now(),
+                )
+            doc.set(newComment)
+                .addOnSuccessListener {
+                    trySend(Resource.Success(true))
+                    Log.d(TAG,"Comment Added at ${doc.id}")
+                }.addOnFailureListener { e ->
+                    trySend(Resource.Error(e.message ?: ERROR))
+                }
+        } catch (e: Exception) {
+            trySend(Resource.Error(e.message ?: ERROR))
+        }
+        trySend(Resource.Loading(isLoading = false))
+        awaitClose()
+    }
+
+    override fun getPostComments(postId: String): Flow<Resource<List<Comment>>>
+    = callbackFlow {
+        trySend(Resource.Loading(isLoading = true))
+        val snapshotListener =
+            fireStore.collection(COLLECTION_POSTS).document(postId)
+                .collection(COLLECTION_COMMENTS)
+                .addSnapshotListener { snapshot, e ->
+                    if (snapshot != null) {
+                        val comments = snapshot.toObjects(Comment::class.java)
+                        trySend(Resource.Success(data = comments))
+                    } else {
+                        trySend(Resource.Error(e?.message?: ERROR))
+                    }
+                }
+        trySend(Resource.Loading(isLoading = false))
+        awaitClose {
+            snapshotListener.remove()
+        }
+    }
+    override fun getPost(postId: String): Flow<Resource<Post>> = callbackFlow {
+        trySend(Resource.Loading(isLoading = true))
+        val snapshotListener =
+            fireStore.collection(COLLECTION_POSTS).document(postId)
+                .addSnapshotListener { snapshot, e ->
+                    if (snapshot != null) {
+                        val post = snapshot.toObject(Post::class.java)
+                        trySend(Resource.Success(data = post!!))
+                    } else {
+                        trySend(Resource.Error(e?.message?: ERROR))
+                    }
+                }
+        trySend(Resource.Loading(isLoading = false))
+        awaitClose {
+            snapshotListener.remove()
+        }
     }
 
     private suspend fun uploadImagePost(uri: Uri, path: String) {
