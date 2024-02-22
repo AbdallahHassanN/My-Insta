@@ -63,20 +63,6 @@ fun CommentItem(
                     fontSize = 15.sp,
                     style = QuickSandTypography.labelLarge,
                 )
-                IconButton(
-                    onClick = {
-                        /*TODO Handle in viewModel */
-                    },
-                    modifier = Modifier.align(Alignment.CenterVertically)
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Favorite,
-                        contentDescription = "Like",
-                        tint = Color.Black,
-                        modifier = Modifier
-                            .size(10.dp)
-                    )
-                }
             }
             CustomDivider()
         }

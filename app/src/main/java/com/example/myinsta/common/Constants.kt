@@ -17,6 +17,7 @@ object Constants {
     const val POST_ID = "postId"
     const val IMAGE_PATH= "imagePath"
     const val COLLECTION_POSTS = "posts"
-    const val COLLECTION_COMMENTS= "comments"
+    const val COLLECTION_COMMENTS = "comments"
+    const val COLLECTION_LIKES = "likes"
 
 }

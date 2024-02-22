@@ -55,4 +55,10 @@ interface FirebaseRepository {
     fun getPostComments(postId: String)
             : Flow<Resource<List<Comment>>>
 
+    fun addLike(postId: String, userId: String, userName: String)
+            : Flow<Resource<Boolean>>
+
+    fun removeLike(userId: String, postId: String, likeId: String)
+            : Flow<Resource<Boolean>>
+
 }
