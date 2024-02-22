@@ -1,7 +1,11 @@
 package com.example.myinsta.presentation.feedScreen.addCommentScreen
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,55 +29,54 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 
 
-
 @Composable
-fun CommentBox (
+fun CommentBox(
     modifier: Modifier,
-    onSendClick:(String)->Unit
+    onSendClick: (String) -> Unit
 ) {
     var chatBoxValue by remember { mutableStateOf(TextFieldValue("")) }
-    Row(modifier = modifier.padding(16.dp))
-    {
-        TextField(
-            value = chatBoxValue,
-            onValueChange = { newText ->
-                chatBoxValue = newText
-            },
-            modifier = Modifier
-                .weight(1f)
-                .padding(4.dp),
-            shape = RoundedCornerShape(24.dp),
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color.Transparent,
-                unfocusedContainerColor = Color.Transparent,
-                disabledContainerColor = Color.Transparent,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                disabledIndicatorColor = Color.Transparent,
-            ),
-            placeholder = {
-                Text(text = "Share Your Thoughts")
-            }
+        Row(
+            modifier = modifier
+                .fillMaxWidth()
+                .background(Color.White)
         )
-        IconButton(
-            onClick = {
-                val msg = chatBoxValue.text
-                if (msg.isBlank()) return@IconButton
-                chatBoxValue = TextFieldValue("")
-                onSendClick(msg)
-            },
-            modifier = Modifier
-                .clip(CircleShape)
-                .align(Alignment.CenterVertically)
-        ) {
-            Icon(
-                imageVector = Icons.Filled.Send,
-                contentDescription = "Send",
+        {
+            TextField(
+                value = chatBoxValue,
+                onValueChange = { newText ->
+                    chatBoxValue = newText
+                },
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(8.dp)
+                    .weight(1f),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    disabledContainerColor = Color.White,
+                    focusedIndicatorColor = Color.Green,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
+                ),
+                placeholder = {
+                    Text(text = "Share Your Thoughts")
+                }
             )
+            IconButton(
+                onClick = {
+                    val msg = chatBoxValue.text
+                    if (msg.isBlank()) return@IconButton
+                    chatBoxValue = TextFieldValue("")
+                    onSendClick(msg)
+                },
+                modifier = Modifier
+                    .align(Alignment.CenterVertically)
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Send,
+                    contentDescription = "Send",
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(start = 8.dp)
+                )
+            }
         }
-    }
-
 }
