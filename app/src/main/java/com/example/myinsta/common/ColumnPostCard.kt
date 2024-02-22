@@ -35,9 +35,12 @@ import com.example.myinsta.ui.theme.QuickSandTypography
 fun ColumnPostCard(
     post: Post,
     onClick: () -> Unit,
-    navClick: () -> Unit
+    navClick: () -> Unit,
+    onLikeClick: () -> Unit,
+    isLiked: Boolean // Add isLiked parameter
+
 ) {
-    var isLiked by remember { mutableStateOf(false) }
+    var isLikedState by remember { mutableStateOf(isLiked) }
 
     Column(
         modifier = Modifier
@@ -87,8 +90,8 @@ fun ColumnPostCard(
         }
         Row {
             IconButton(onClick = {
-                /*TODO Handle in viewModel */
-                isLiked = !isLiked
+                onLikeClick()
+                isLikedState = !isLiked
             }) {
                 Icon(
                     imageVector = if (isLiked) Icons.Filled.Favorite

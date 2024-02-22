@@ -6,12 +6,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myinsta.common.Constants
 import com.example.myinsta.common.Constants.TAG
-import com.example.myinsta.common.validator.ValidateResult
 import com.example.myinsta.models.Comment
 import com.example.myinsta.models.Post
 import com.example.myinsta.models.User
 import com.example.myinsta.response.Resource
 import com.example.myinsta.useCases.FirebaseAddCommentUseCase
+import com.example.myinsta.useCases.FirebaseAddLikeUseCase
 import com.example.myinsta.useCases.FirebaseGetCommentsUseCase
 import com.example.myinsta.useCases.FirebaseGetFollowingInfoUseCase
 import com.example.myinsta.useCases.FirebaseGetFollowingListIds
@@ -19,6 +19,7 @@ import com.example.myinsta.useCases.FirebaseGetPostUseCase
 import com.example.myinsta.useCases.FirebaseGetUserIdUseCase
 import com.example.myinsta.useCases.FirebaseGetUserInfoUseCase
 import com.example.myinsta.useCases.FirebaseGetUsersPostsUseCase
+import com.example.myinsta.useCases.FirebaseRemoveLikeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
@@ -39,7 +40,9 @@ class FeedScreenViewModel
     private val firebaseGetUsersPostsUseCase: FirebaseGetUsersPostsUseCase,
     private val firebaseAddCommentUseCase: FirebaseAddCommentUseCase,
     private val firebaseGetPostUseCase: FirebaseGetPostUseCase,
-    private val firebaseGetCommentsUseCase: FirebaseGetCommentsUseCase
+    private val firebaseGetCommentsUseCase: FirebaseGetCommentsUseCase,
+    private val firebaseAddLikeUseCase: FirebaseAddLikeUseCase,
+    private val firebaseRemoveLikeUseCase: FirebaseRemoveLikeUseCase,
 ) : ViewModel() {
 
     private val _currentUserId = MutableStateFlow<String>("")
@@ -62,15 +65,14 @@ class FeedScreenViewModel
     private val _commentsList = MutableStateFlow<List<Comment?>>(emptyList())
     val commentsList = _commentsList.asStateFlow()
 
-    private val _commentValue = MutableStateFlow("")
-    val commentValue = _commentValue.asStateFlow()
+    private val _likesList = MutableStateFlow<List<Comment?>>(emptyList())
+    val likesList = _likesList.asStateFlow()
 
     private val _postData = MutableStateFlow<Post?>(null)
     val postData = _postData.asStateFlow()
 
-    val commentValidation = mutableStateOf<ValidateResult?>(null)
-
     val loading = mutableStateOf(false)
+
 
     init {
         firebaseGetUserIdUseCase.execute()?.let {
@@ -94,7 +96,7 @@ class FeedScreenViewModel
     fun getComments(postId: String) {
         viewModelScope.launch {
             firebaseGetCommentsUseCase.execute(postId)
-                .collect {response ->
+                .collect { response ->
                     when (response) {
                         is Resource.Error -> {
                             loading.value = false
@@ -143,7 +145,7 @@ class FeedScreenViewModel
         }
     }
 
-    fun getFollowingList(ids: List<String>) = viewModelScope.launch {
+    private fun getFollowingList(ids: List<String>) = viewModelScope.launch {
         val allFollowing = mutableListOf<User>()
         val jobs = mutableListOf<Deferred<List<User>>>()
         for (id in ids) {
@@ -158,7 +160,7 @@ class FeedScreenViewModel
         _followingList.value = allFollowing
     }
 
-    fun getFollowingListIds(id: String) {
+    private fun getFollowingListIds(id: String) {
         viewModelScope.launch {
             firebaseGetFollowingListIds
                 .execute(id)
@@ -188,6 +190,7 @@ class FeedScreenViewModel
             _postData.value = it.data
         }
     }
+
     fun addComment(
         postId: String,
         comment: String,
@@ -216,6 +219,74 @@ class FeedScreenViewModel
 
                         is Resource.Success -> {
                             Log.d(TAG, "Success")
+                            loading.value = false
+                        }
+                    }
+                }
+        }
+    }
+
+    fun addLike(
+        postId: String,
+        userId: String,
+        userName: String
+    ) {
+        viewModelScope.launch {
+            firebaseAddLikeUseCase
+                .execute(
+                    postId = postId,
+                    userId = userId,
+                    userName = userName
+                )
+                .collect { response ->
+                    when (response) {
+                        is Resource.Error -> {
+                            loading.value = false
+                            Log.d(TAG, Constants.ERROR)
+                        }
+
+                        is Resource.Loading -> {
+                            loading.value = true
+                            Log.d(TAG, "Loading")
+                        }
+
+                        is Resource.Success -> {
+                            Log.d("Add Like", (response.data ?: response.message).toString())
+                            Log.d(TAG, "Like Success")
+                            loading.value = false
+                        }
+                    }
+                }
+        }
+    }
+
+    fun removeLike(
+        userId: String,
+        postId: String,
+        likeId: String
+    ) {
+        viewModelScope.launch {
+            firebaseRemoveLikeUseCase
+                .execute(
+                    postId = postId,
+                    userId = userId,
+                    likeId = likeId
+                )
+                .collect { response ->
+                    when (response) {
+                        is Resource.Error -> {
+                            loading.value = false
+                            Log.d(TAG, Constants.ERROR)
+                        }
+
+                        is Resource.Loading -> {
+                            loading.value = true
+                            Log.d(TAG, "Loading")
+                        }
+
+                        is Resource.Success -> {
+                            Log.d("Remove Like", (response.data ?: response.message).toString())
+                            Log.d(TAG, "Remove Success")
                             loading.value = false
                         }
                     }

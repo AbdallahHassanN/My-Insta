@@ -27,15 +27,30 @@ fun FeedScreen(
 ) {
     val viewModel: FeedScreenViewModel = hiltViewModel()
     val posts by viewModel.postsList.collectAsStateWithLifecycle()
-    val users by viewModel.followingList.collectAsStateWithLifecycle()
+    val currentUserId by viewModel.currentUserId.collectAsStateWithLifecycle()
+    val postData by viewModel.postData.collectAsStateWithLifecycle()
 
     val loading = viewModel.loading.value
 
     LaunchedEffect(key1 = true, block = {
         viewModel.getUsersDataOfFollowing()
     })
-
-
+    val onLikeClick: (postId: String) -> Unit = { postId ->
+        viewModel.getPost(postId)
+        if (postData?.likes?.contains(currentUserId) == true) {
+            viewModel.removeLike(
+                postId = postId,
+                userId = currentUserId,
+                likeId = currentUserId
+            )
+        } else {
+            viewModel.addLike(
+                postId = postId,
+                userId = currentUserId,
+                userName = viewModel.userName.value
+            )
+        }
+    }
     Scaffold(
         topBar = { TopBar(navController = navController) },
         bottomBar = { BottomNavigation(navController = navController) }
@@ -57,7 +72,9 @@ fun FeedScreen(
                 posts = posts,
                 navController = navController,
                 loading = loading,
-                it = paddingValues
+                it = paddingValues,
+                onLikeClick = onLikeClick,
+                currentUserId = currentUserId, // Pass currentUserId to ColumnPostList
             )
         }
     }

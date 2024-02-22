@@ -21,6 +21,8 @@ fun ColumnPostList(
     posts: List<Post?>,
     navController: NavController,
     it: PaddingValues,
+    currentUserId: String, // Add currentUserId parameter
+    onLikeClick: (postId: String) -> Unit,
 ) {
     val listState = rememberLazyListState()
     Box(
@@ -42,6 +44,10 @@ fun ColumnPostList(
                     navClick = {
                         navController.navigate(Screens.AddCommentScreen.withArgs(post.postId))
                     },
+                    onLikeClick = {
+                        onLikeClick(post.postId) // Pass postId to onLikeClick
+                    },
+                    isLiked = post.likes.contains(currentUserId)
                 )
             }
         }
