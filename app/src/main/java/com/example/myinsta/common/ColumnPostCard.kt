@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import com.example.myinsta.R
 import com.example.myinsta.components.CustomDivider
 import com.example.myinsta.models.Post
+import com.example.myinsta.presentation.profileScreen.components.RoundedImageView
 import com.example.myinsta.ui.theme.QuickSandTypography
 
 @Composable
@@ -36,9 +37,9 @@ fun ColumnPostCard(
     post: Post,
     onClick: () -> Unit,
     navClick: () -> Unit,
-    onLikeClick: () -> Unit,
-    isLiked: Boolean // Add isLiked parameter
-
+    onLikeClick: (postId: String) -> Unit,
+    isLiked: Boolean, // Add isLiked parameter
+    img:String
 ) {
     var isLikedState by remember { mutableStateOf(isLiked) }
 
@@ -55,6 +56,7 @@ fun ColumnPostCard(
                 .clickable(onClick = onClick),
             verticalAlignment = Alignment.CenterVertically,
         ) {
+            RoundedImageView(img)
             Text(
                 text = post.userName, modifier = Modifier.padding(start = 10.dp),
                 style = QuickSandTypography.displaySmall,
@@ -90,7 +92,7 @@ fun ColumnPostCard(
         }
         Row {
             IconButton(onClick = {
-                onLikeClick()
+                onLikeClick(post.postId)
                 isLikedState = !isLiked
             }) {
                 Icon(

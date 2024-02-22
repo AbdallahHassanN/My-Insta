@@ -1,24 +1,31 @@
 package com.example.myinsta.presentation.feedScreen
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.example.myinsta.common.ColumnPostList
+import com.example.myinsta.common.ColumnPostCard
+import com.example.myinsta.common.Constants
 import com.example.myinsta.components.BottomNavigation
 import com.example.myinsta.components.TopBar
 import com.example.myinsta.components.UnseenStoryIcon
+import com.example.myinsta.presentation.feedScreen.addCommentScreen.CommentItem
+import com.example.navapp.Screens
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
@@ -29,12 +36,18 @@ fun FeedScreen(
     val posts by viewModel.postsList.collectAsStateWithLifecycle()
     val currentUserId by viewModel.currentUserId.collectAsStateWithLifecycle()
     val postData by viewModel.postData.collectAsStateWithLifecycle()
-
-    val loading = viewModel.loading.value
+    val userInfo by viewModel.userInfo.collectAsStateWithLifecycle()
+    val isLoading by viewModel.loading.collectAsState()
 
     LaunchedEffect(key1 = true, block = {
         viewModel.getUsersDataOfFollowing()
     })
+
+    LaunchedEffect(key1 = posts) {
+        posts.forEach { post ->
+            viewModel.getInfoByUserInfo(post!!.userId)
+        }
+    }
     val onLikeClick: (postId: String) -> Unit = { postId ->
         viewModel.getPost(postId)
         if (postData?.likes?.contains(currentUserId) == true) {
@@ -68,14 +81,27 @@ fun FeedScreen(
                     UnseenStoryIcon()
                 }
             }
-            ColumnPostList(
-                posts = posts,
-                navController = navController,
-                loading = loading,
-                it = paddingValues,
-                onLikeClick = onLikeClick,
-                currentUserId = currentUserId, // Pass currentUserId to ColumnPostList
-            )
+            LazyColumn(
+                verticalArrangement = Arrangement.Top
+            ) {
+                if (!(isLoading)) {
+                    items(posts) { post ->
+                        val user = userInfo[post!!.userId]
+                        ColumnPostCard(
+                            post = post,
+                            onClick = {
+                                navController.navigate(Screens.UserScreen.withArgs(post.userId))
+                            },
+                            navClick = {
+                                navController.navigate(Screens.AddCommentScreen.withArgs(post.postId))
+                            },
+                            onLikeClick = onLikeClick,
+                            isLiked = post.likes.contains(currentUserId),
+                            img = user?.imageUrl ?: "",
+                        )
+                    }
+                }
+            }
         }
     }
 }
