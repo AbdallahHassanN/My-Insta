@@ -16,7 +16,9 @@ import com.example.myinsta.useCases.FirebaseGetCommentsUseCase
 import com.example.myinsta.useCases.FirebaseGetFollowingInfoUseCase
 import com.example.myinsta.useCases.FirebaseGetFollowingListIds
 import com.example.myinsta.useCases.FirebaseGetPostUseCase
+import com.example.myinsta.useCases.FirebaseGetUserByName
 import com.example.myinsta.useCases.FirebaseGetUserIdUseCase
+import com.example.myinsta.useCases.FirebaseGetUserInfoByUserNameUseCase
 import com.example.myinsta.useCases.FirebaseGetUserInfoUseCase
 import com.example.myinsta.useCases.FirebaseGetUsersPostsUseCase
 import com.example.myinsta.useCases.FirebaseRemoveLikeUseCase
@@ -25,8 +27,10 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -43,12 +47,13 @@ class FeedScreenViewModel
     private val firebaseGetCommentsUseCase: FirebaseGetCommentsUseCase,
     private val firebaseAddLikeUseCase: FirebaseAddLikeUseCase,
     private val firebaseRemoveLikeUseCase: FirebaseRemoveLikeUseCase,
+    //private val firebaseGetUserInfoByUserNameUseCase: FirebaseGetUserInfoByUserNameUseCase
 ) : ViewModel() {
 
     private val _currentUserId = MutableStateFlow<String>("")
     val currentUserId = _currentUserId.asStateFlow()
 
-    private val _userInfo = MutableStateFlow<User?>(null)
+    private val _userInfo = MutableStateFlow<Map<String, User?>>(emptyMap())
     val userInfo = _userInfo.asStateFlow()
 
     private val _followingIdsList = MutableStateFlow<List<String>>(emptyList())
@@ -70,8 +75,8 @@ class FeedScreenViewModel
 
     private val _postData = MutableStateFlow<Post?>(null)
     val postData = _postData.asStateFlow()
-
-    val loading = mutableStateOf(false)
+    private val _loading = MutableStateFlow<Boolean>(false)
+    val loading: StateFlow<Boolean> = _loading.asStateFlow()
 
 
     init {
@@ -86,6 +91,34 @@ class FeedScreenViewModel
         }
     }
 
+    fun getInfoByUserInfo(userId: String) = viewModelScope.launch {
+        _loading.value = true
+        firebaseGetUserInfoUseCase
+            .execute(userId)
+            .collect { response ->
+                when (response) {
+                    is Resource.Success -> {
+                        val newUserMap = _userInfo.value.toMutableMap()
+                        newUserMap[userId] = response.data
+                        _userInfo.value = newUserMap
+                        _loading.value = false
+                        Log.d(TAG, "vm user ${_userInfo.value}")
+                    }
+
+                    is Resource.Error -> {
+                        _loading.value = false
+                        Log.d(TAG, "vm user failed")
+
+                    }
+
+                    is Resource.Loading -> {
+                        Log.d(TAG, "vm user loading")
+                    }
+                }
+            }
+    }
+
+
     fun getUsersDataOfFollowing() = viewModelScope.launch {
         getFollowingListIds(_currentUserId.value)
         getFollowingList(_followingIdsList.value).apply {
@@ -95,24 +128,22 @@ class FeedScreenViewModel
 
     fun getComments(postId: String) {
         viewModelScope.launch {
+            _loading.value = true
             firebaseGetCommentsUseCase.execute(postId)
                 .collect { response ->
                     when (response) {
                         is Resource.Error -> {
-                            loading.value = false
+                            _loading.value = false
                             Log.d(TAG, "ERROR")
                         }
-
                         is Resource.Loading -> {
-                            loading.value = true
                             Log.d(TAG, "Loading")
                         }
-
                         is Resource.Success -> {
-                            loading.value = false
                             _commentsList.value = response.data!!.sortedByDescending {
                                 it.time
                             }
+                            _loading.value = false
                         }
                     }
                 }
@@ -124,17 +155,17 @@ class FeedScreenViewModel
             firebaseGetUsersPostsUseCase.execute(idsList).collect { response ->
                 when (response) {
                     is Resource.Error -> {
-                        loading.value = false
+                        _loading.value = false
                         Log.d(TAG, "ERROR")
                     }
 
                     is Resource.Loading -> {
-                        loading.value = true
+                        _loading.value = true
                         Log.d(TAG, "Loading")
                     }
 
                     is Resource.Success -> {
-                        loading.value = false
+                        _loading.value = false
                         _postsList.value = response.data!!.sortedByDescending {
                             it.time
                         }
@@ -167,18 +198,18 @@ class FeedScreenViewModel
                 .collect { response ->
                     when (response) {
                         is Resource.Error -> {
-                            loading.value = false
+                            _loading.value = false
                             Log.d(TAG, Constants.ERROR)
                         }
 
                         is Resource.Loading -> {
-                            loading.value = true
+                            _loading.value = true
                             Log.d(TAG, "Loading")
                         }
 
                         is Resource.Success -> {
                             _followingIdsList.value = response.data!!
-                            loading.value = false
+                            _loading.value = false
                         }
                     }
                 }
@@ -208,18 +239,18 @@ class FeedScreenViewModel
                 .collect { response ->
                     when (response) {
                         is Resource.Error -> {
-                            loading.value = false
+                            _loading.value = false
                             Log.d(TAG, Constants.ERROR)
                         }
 
                         is Resource.Loading -> {
-                            loading.value = true
+                            _loading.value = true
                             Log.d(TAG, "Loading")
                         }
 
                         is Resource.Success -> {
                             Log.d(TAG, "Success")
-                            loading.value = false
+                            _loading.value = false
                         }
                     }
                 }
@@ -241,19 +272,19 @@ class FeedScreenViewModel
                 .collect { response ->
                     when (response) {
                         is Resource.Error -> {
-                            loading.value = false
+                            _loading.value = false
                             Log.d(TAG, Constants.ERROR)
                         }
 
                         is Resource.Loading -> {
-                            loading.value = true
+                            _loading.value = true
                             Log.d(TAG, "Loading")
                         }
 
                         is Resource.Success -> {
                             Log.d("Add Like", (response.data ?: response.message).toString())
                             Log.d(TAG, "Like Success")
-                            loading.value = false
+                            _loading.value = false
                         }
                     }
                 }
@@ -275,19 +306,19 @@ class FeedScreenViewModel
                 .collect { response ->
                     when (response) {
                         is Resource.Error -> {
-                            loading.value = false
+                            _loading.value = false
                             Log.d(TAG, Constants.ERROR)
                         }
 
                         is Resource.Loading -> {
-                            loading.value = true
+                            _loading.value = true
                             Log.d(TAG, "Loading")
                         }
 
                         is Resource.Success -> {
                             Log.d("Remove Like", (response.data ?: response.message).toString())
                             Log.d(TAG, "Remove Success")
-                            loading.value = false
+                            _loading.value = false
                         }
                     }
                 }

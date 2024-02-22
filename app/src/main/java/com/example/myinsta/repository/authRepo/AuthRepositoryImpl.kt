@@ -135,7 +135,6 @@ class AuthRepositoryImpl @Inject constructor(
             snapshotListener.remove()
         }
     }
-
     override fun changeName(newName: String): Flow<Resource<Boolean>> =
         callbackFlow {
             firebaseAuth.currentUser?.let { user ->

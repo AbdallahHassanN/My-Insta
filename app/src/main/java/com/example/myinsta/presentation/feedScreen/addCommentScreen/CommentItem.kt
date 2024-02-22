@@ -1,5 +1,6 @@
 package com.example.myinsta.presentation.feedScreen.addCommentScreen
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,16 +15,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.myinsta.common.Constants
+import com.example.myinsta.common.Constants.DEFAULT_User_IMAGE
 import com.example.myinsta.common.timeFormat
 import com.example.myinsta.components.CustomDivider
 import com.example.myinsta.models.Comment
+import com.example.myinsta.presentation.profileScreen.components.RoundedImageView
 import com.example.myinsta.ui.theme.QuickSandTypography
 
 
 @Composable
 fun CommentItem(
+    img:String,
     comment: Comment
 ) {
 
@@ -37,6 +43,7 @@ fun CommentItem(
                 verticalAlignment = Alignment.CenterVertically
 
             ) {
+                RoundedImageView(img)
                 Text(
                     text = comment.authorName,
                     modifier = Modifier.padding(start = 5.dp, top = 5.dp, bottom = 5.dp),
