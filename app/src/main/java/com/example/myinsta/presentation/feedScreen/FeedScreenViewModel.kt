@@ -102,7 +102,6 @@ class FeedScreenViewModel
                         newUserMap[userId] = response.data
                         _userInfo.value = newUserMap
                         _loading.value = false
-                        Log.d(TAG, "vm user ${_userInfo.value}")
                     }
 
                     is Resource.Error -> {
