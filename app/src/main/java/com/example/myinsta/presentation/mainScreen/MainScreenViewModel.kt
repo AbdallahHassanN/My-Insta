@@ -35,22 +35,23 @@ class MainScreenViewModel @Inject constructor(
     val emailValidation = mutableStateOf<ValidateResult?>(null)
     val passwordValidation = mutableStateOf<ValidateResult?>(null)
 
-
+    val loading = mutableStateOf(false)
     fun signIn() = viewModelScope.launch {
         _signInState.value = Resource.Loading()
         emailValidation.value = validateEmail()
         passwordValidation.value = validatePassword()
 
         if (emailValidation.value!!.isSuccess && passwordValidation.value!!.isSuccess) {
+            loading.value = true
             firebaseSignInUseCase.execute(
                 email = _email.value.trim(), password = _password.value.trim()
             ).collect {
                 _signInState.value = it
                 Log.d(TAG, "View Model value ${_signInState.value}")
+                loading.value = false
             }
         }
     }
-
     private fun validateEmail() = BaseValidator.validate(
         EmptyValidator(_email.value), EmailValidator(_email.value.trim())
     )

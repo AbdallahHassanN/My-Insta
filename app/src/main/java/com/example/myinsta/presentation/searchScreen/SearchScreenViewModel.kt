@@ -29,6 +29,7 @@ class SearchScreenViewModel
     val query = _query.asStateFlow()
     val loading = mutableStateOf(false)
 
+
     fun getUsersByName(
         name:String
     ){

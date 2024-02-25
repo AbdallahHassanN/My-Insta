@@ -55,6 +55,7 @@ class ProfileScreenViewModel
     }
 
     fun getFlows(id: String) = viewModelScope.launch {
+        loading.value = true
         firebaseGetUserInfoUseCase.execute(
             userId = id
         ).zip(
