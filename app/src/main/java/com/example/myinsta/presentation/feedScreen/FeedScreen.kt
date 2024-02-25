@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -21,6 +23,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.myinsta.common.ColumnPostCard
 import com.example.myinsta.common.Constants
+import com.example.myinsta.common.Constants.TAG
 import com.example.myinsta.components.BottomNavigation
 import com.example.myinsta.components.TopBar
 import com.example.myinsta.components.UnseenStoryIcon
@@ -48,22 +51,11 @@ fun FeedScreen(
             viewModel.getInfoByUserInfo(post!!.userId)
         }
     }
-    val onLikeClick: (postId: String) -> Unit = { postId ->
-        viewModel.getPost(postId)
-        if (postData?.likes?.contains(currentUserId) == true) {
-            viewModel.removeLike(
-                postId = postId,
-                userId = currentUserId,
-                likeId = currentUserId
-            )
-        } else {
-            viewModel.addLike(
-                postId = postId,
-                userId = currentUserId,
-                userName = viewModel.userName.value
-            )
-        }
-    }
+
+    Log.d(TAG, "postss $posts")
+    Log.d(TAG, "posts $postData")
+
+
     Scaffold(
         topBar = { TopBar(navController = navController) },
         bottomBar = { BottomNavigation(navController = navController) }
@@ -82,20 +74,36 @@ fun FeedScreen(
                 }
             }
             LazyColumn(
-                verticalArrangement = Arrangement.Top
+                verticalArrangement = Arrangement.Top,
             ) {
                 if (!(isLoading)) {
-                    items(posts) { post ->
+                    items(posts, key = { posts -> posts!!.postId }) { post ->
                         val user = userInfo[post!!.userId]
                         ColumnPostCard(
                             post = post,
                             onClick = {
-                                navController.navigate(Screens.UserScreen.withArgs(post.userId))
+                                navController
+                                    .navigate(Screens.UserScreen.withArgs(post.userId))
                             },
                             navClick = {
-                                navController.navigate(Screens.AddCommentScreen.withArgs(post.postId))
+                                navController
+                                    .navigate(Screens.AddCommentScreen.withArgs(post.postId))
                             },
-                            onLikeClick = onLikeClick,
+                            onLikeClick = {
+                                if (!(post.likes.contains(currentUserId))) {
+                                    viewModel.addLike(
+                                        postId = post.postId,
+                                        userId = currentUserId,
+                                        userName = viewModel.userName.value
+                                    )
+                                } else {
+                                    viewModel.removeLike(
+                                        postId = post.postId,
+                                        userId = currentUserId,
+                                        likeId = currentUserId
+                                    )
+                                }
+                            },
                             isLiked = post.likes.contains(currentUserId),
                             img = user?.imageUrl ?: "",
                         )
