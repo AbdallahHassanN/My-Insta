@@ -37,8 +37,8 @@ fun ColumnPostCard(
     post: Post,
     onClick: () -> Unit,
     navClick: () -> Unit,
-    onLikeClick: (postId: String) -> Unit,
-    isLiked: Boolean, // Add isLiked parameter
+    onLikeClick: () -> Unit,
+    isLiked: Boolean,
     img:String
 ) {
     var isLikedState by remember { mutableStateOf(isLiked) }
@@ -92,14 +92,14 @@ fun ColumnPostCard(
         }
         Row {
             IconButton(onClick = {
-                onLikeClick(post.postId)
-                isLikedState = !isLiked
+                onLikeClick()
+                isLikedState = !isLikedState
             }) {
                 Icon(
-                    imageVector = if (isLiked) Icons.Filled.Favorite
+                    imageVector = if (isLikedState) Icons.Filled.Favorite
                     else Icons.Filled.FavoriteBorder,
                     contentDescription = "Like",
-                    tint = if (isLiked) Color.Red else Color.Black,
+                    tint = if (isLikedState) Color.Red else Color.Black,
                     modifier = Modifier
                         .size(30.dp)
                 )

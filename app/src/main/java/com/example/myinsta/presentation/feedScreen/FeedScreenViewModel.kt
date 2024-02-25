@@ -135,9 +135,11 @@ class FeedScreenViewModel
                             _loading.value = false
                             Log.d(TAG, "ERROR")
                         }
+
                         is Resource.Loading -> {
                             Log.d(TAG, "Loading")
                         }
+
                         is Resource.Success -> {
                             _commentsList.value = response.data!!.sortedByDescending {
                                 it.time
@@ -168,6 +170,7 @@ class FeedScreenViewModel
                         _postsList.value = response.data!!.sortedByDescending {
                             it.time
                         }
+                        Log.d(TAG, "Success _postsList.value")
                     }
                 }
 
@@ -216,10 +219,27 @@ class FeedScreenViewModel
     }
 
     fun getPost(postId: String) = viewModelScope.launch {
-        firebaseGetPostUseCase.execute(postId).collect {
-            _postData.value = it.data
+        firebaseGetPostUseCase.execute(postId).collect { response ->
+            when (response) {
+                is Resource.Error -> {
+                    _loading.value = false
+                    Log.d(TAG, Constants.ERROR)
+                }
+
+                is Resource.Loading -> {
+                    _loading.value = true
+                    Log.d(TAG, "Loading")
+                }
+
+                is Resource.Success -> {
+                    _postData.value = response.data!!
+                    Log.d(TAG, "Success _postData.value")
+                    _loading.value = false
+                }
+            }
         }
     }
+
 
     fun addComment(
         postId: String,
