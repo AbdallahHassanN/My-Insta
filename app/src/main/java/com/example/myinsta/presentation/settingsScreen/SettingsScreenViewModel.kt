@@ -55,6 +55,7 @@ class SettingsScreenViewModel
 
     private val _editUsernameState = MutableStateFlow<Resource<Boolean>?>(null)
     val editUsernameState: StateFlow<Resource<Boolean>?> = _editUsernameState
+    val loading = mutableStateOf(false)
 
     init {
         firebaseGetUserIdUseCase.execute()?.let {
@@ -64,6 +65,7 @@ class SettingsScreenViewModel
     }
 
     fun getUserInfo(id: String) = viewModelScope.launch {
+        loading.value = true
         firebaseGetUserInfoUseCase.execute(
             userId = id
         ).catch {
@@ -71,6 +73,7 @@ class SettingsScreenViewModel
         }.collect { response ->
             when (response) {
                 is Resource.Error -> {
+                    loading.value = false
                     Log.d(TAG, ERROR)
                 }
 
@@ -80,6 +83,7 @@ class SettingsScreenViewModel
 
                 is Resource.Success -> {
                     _userInfo.value = response.data!!
+                    loading.value = false
                 }
             }
         }
@@ -106,6 +110,7 @@ class SettingsScreenViewModel
     fun changeName(newName: String) {
         viewModelScope.launch {
             firebaseEditFullName.execute(newName).collect { response ->
+                loading.value = true
                 when (response) {
                     is Resource.Error -> {
                         Log.d(TAG, ERROR)
@@ -116,6 +121,7 @@ class SettingsScreenViewModel
                     }
 
                     is Resource.Success -> {
+                        loading.value = false
                         Log.d(TAG, "Success")
                     }
                 }
@@ -164,14 +170,17 @@ class SettingsScreenViewModel
     fun updateUserProfilePhoto(uri: Uri) {
         viewModelScope.launch {
             firebaseChangeProfilePicture.execute(uri, _userId.value).collect {
+                loading.value = true
                 when (it) {
                     is Resource.Error -> {
+                        loading.value = false
                         Log.d(TAG, ERROR)
                     }
                     is Resource.Loading -> {
                         Log.d(TAG, "Loading")
                     }
                     is Resource.Success -> {
+                        loading.value = false
                         Log.d(TAG, "Success")
                     }
                 }

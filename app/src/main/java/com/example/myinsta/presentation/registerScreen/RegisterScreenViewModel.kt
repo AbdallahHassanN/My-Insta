@@ -40,7 +40,7 @@ class RegisterScreenViewModel @Inject constructor(
     val passwordValidation = mutableStateOf<ValidateResult?>(null)
     val usernameValidation = mutableStateOf<ValidateResult?>(null)
     val fullNameValidation = mutableStateOf<ValidateResult?>(null)
-
+    val loading = mutableStateOf(false)
     fun register() = viewModelScope.launch {
         emailValidation.value = validateEmail()
         fullNameValidation.value = validateFullName()
@@ -52,6 +52,7 @@ class RegisterScreenViewModel @Inject constructor(
             fullNameValidation.value!!.isSuccess
         ) {
             _registerState.value = Resource.Loading(true)
+            loading.value = true
             firebaseRegisterUseCase.execute(
                 email = _email.value.trim(),
                 password = _password.value.trim(),
@@ -60,6 +61,7 @@ class RegisterScreenViewModel @Inject constructor(
             ).collect {
                 _registerState.value = it
                 Log.d(TAG, "View Model state value ${_registerState.value}")
+                loading.value = false
             }
         }
     }

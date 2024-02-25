@@ -25,7 +25,8 @@ fun ChangeBioScreen(
             viewModel.changeBio(bioValue)
             navController.navigate(Screens.SettingsScreen.route) {
                 popUpTo(Screens.SettingsScreen.route) { inclusive = true }
-            }          },
+            }
+        },
         onTextChanged = {
             viewModel.onBioChanged(it)
         }

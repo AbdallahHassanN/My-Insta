@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.example.myinsta.common.CircularProgressBar
 import com.example.myinsta.common.Constants.TAG
 import com.example.myinsta.common.GridPostsList
 import com.example.myinsta.components.CustomDivider
@@ -55,9 +56,7 @@ fun ProfileScreen(
     LaunchedEffect(key1 = userId, block = {
         viewModel.getFlows(userId!!)
     })
-    LaunchedEffect(key1 = userId, block = {
-        viewModel.getAllPostsListIds(userId!!)
-    })
+
     if (userInfo != null) {
         username = userInfo!!.username
         fullName = userInfo!!.fullName
@@ -160,6 +159,7 @@ fun ProfileScreen(
             }
         }
         CustomDivider()
+        CircularProgressBar(isDisplayed = loading)
         GridPostsList(posts = postsList, navController = navController, loading = loading)
     }
 }

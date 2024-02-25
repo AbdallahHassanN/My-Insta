@@ -27,6 +27,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.myinsta.R
+import com.example.myinsta.common.CircularProgressBar
 import com.example.myinsta.common.Constants.TAG
 import com.example.myinsta.components.CenteredText
 import com.example.myinsta.components.LogoImage
@@ -45,6 +46,7 @@ fun MainScreen(navController: NavController) {
     val passwordValue by viewModel.password.collectAsStateWithLifecycle()
     val signInValue = viewModel.signInState.collectAsState()
     val snackBarHostState = remember { SnackbarHostState() }
+    val loading = viewModel.loading.value
 
     // Function to show the snackBar
     suspend fun showSnackBar(message: String) {
@@ -113,6 +115,7 @@ fun MainScreen(navController: NavController) {
                 navController.navigate(Screens.RegisterScreen.route)
             }, text = "Have an account ?", link = " Register Here"
         )
+        CircularProgressBar(isDisplayed = loading)
         Box(
             modifier = Modifier
                 .fillMaxSize()

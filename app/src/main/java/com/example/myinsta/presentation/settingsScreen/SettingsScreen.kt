@@ -30,6 +30,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.myinsta.common.CircularProgressBar
 import com.example.myinsta.common.pickFromGallery
 import com.example.myinsta.components.BoxItem
 import com.example.myinsta.presentation.profileScreen.components.RoundedImageView
@@ -44,6 +45,7 @@ fun SettingsScreen(
     val viewModel: SettingsScreenViewModel = hiltViewModel()
     val userId by viewModel.userId.collectAsStateWithLifecycle()
     val userInfo by viewModel.userInfo.collectAsStateWithLifecycle()
+    val loading = viewModel.loading.value
     var username = ""
     var fullName = ""
     var img = ""
@@ -176,6 +178,7 @@ fun SettingsScreen(
                     color = Color.Red
                 )
             }
+            CircularProgressBar(isDisplayed = loading)
         }
     }
 }

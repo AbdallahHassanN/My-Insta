@@ -25,6 +25,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.myinsta.R
+import com.example.myinsta.common.CircularProgressBar
 import com.example.myinsta.common.Constants
 import com.example.myinsta.components.CenteredText
 import com.example.myinsta.components.LogoImage
@@ -44,6 +45,7 @@ fun RegisterScreen(navController: NavController) {
     val passwordValue by viewModel.password.collectAsStateWithLifecycle()
     val registerState = viewModel.registerState.collectAsState()
     val snackBarHostState = remember { SnackbarHostState() }
+    var loading = viewModel.loading.value
 
     // Function to show the snackBar
     suspend fun showSnackBar(message: String) {
@@ -54,6 +56,7 @@ fun RegisterScreen(navController: NavController) {
         when (it) {
             is Resource.Error -> {
                 LaunchedEffect(Unit) {
+                    //loading = false
                     val error = it.message
                     showSnackBar(error.toString())
                 }
@@ -63,9 +66,11 @@ fun RegisterScreen(navController: NavController) {
                 LaunchedEffect(Unit) {
                     Log.d(Constants.TAG, "Loading")
                 }
+                loading = true
             }
 
             is Resource.Success -> {
+                loading = false
                 LaunchedEffect(Unit) {
                     navController.navigate(Screens.FeedScreen.route) {
                         popUpTo(Screens.MainScreen.route) { inclusive = true }
@@ -116,6 +121,7 @@ fun RegisterScreen(navController: NavController) {
                 viewModel.register()
             }
         )
+        CircularProgressBar(isDisplayed = loading)
         CenteredText(
             text = "OR",
             color = Color.Gray,
