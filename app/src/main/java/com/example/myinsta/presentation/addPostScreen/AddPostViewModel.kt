@@ -2,16 +2,15 @@ package com.example.myinsta.presentation.addPostScreen
 
 import android.net.Uri
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myinsta.common.Constants
 import com.example.myinsta.models.User
 import com.example.myinsta.response.Resource
 import com.example.myinsta.useCases.FirebaseCreatePostUseCase
-import com.example.myinsta.useCases.FirebaseGetUserByName
 import com.example.myinsta.useCases.FirebaseGetUserIdUseCase
 import com.example.myinsta.useCases.FirebaseGetUserInfoUseCase
-import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -38,6 +37,8 @@ class AddPostViewModel
     val userId = _userId.asStateFlow()
     private val _userInfo = MutableStateFlow<User?>(null)
     val userInfo = _userInfo.asStateFlow()
+    val loading = mutableStateOf(false)
+
 
     init {
         firebaseGetUserIdUseCase.execute()?.let { user ->
@@ -73,6 +74,7 @@ class AddPostViewModel
     ) {
         viewModelScope.launch {
             val postId = UUID.randomUUID().toString()
+            loading.value = true
             firebaseCreatePostUseCase
                 .execute(
                     postId = postId,
@@ -94,6 +96,7 @@ class AddPostViewModel
                         is Resource.Success -> {
                             _postState.value = response
                             Log.d(Constants.TAG, "Success")
+                            loading.value = false
                         }
                     }
                 }

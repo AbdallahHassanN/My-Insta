@@ -25,11 +25,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.myinsta.R
-import com.example.myinsta.common.CircularProgressBar
+import com.example.myinsta.common.ButtonWithLoader
 import com.example.myinsta.common.Constants
 import com.example.myinsta.components.CenteredText
 import com.example.myinsta.components.LogoImage
-import com.example.myinsta.components.MyButton
 import com.example.myinsta.components.PasswordTextField
 import com.example.myinsta.components.TextAndLink
 import com.example.myinsta.components.UsernameOrEmailTextField
@@ -115,14 +114,10 @@ fun RegisterScreen(navController: NavController) {
             onQueryChanged = { viewModel.onPasswordChanged(it) },
             isError = viewModel.passwordValidation.value?.isSuccess?.not() ?: false,
         )
-        MyButton(
-            text = "Register",
-            onClick = {
-                viewModel.register()
-            }
-        )
-        CircularProgressBar(isDisplayed = loading)
-        CenteredText(
+        ButtonWithLoader(buttonText = "Register", loading) {
+            viewModel.register()
+        }
+            CenteredText(
             text = "OR",
             color = Color.Gray,
             onClick = {},

@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -21,13 +19,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.example.myinsta.common.CircularProgressBar
 import com.example.myinsta.common.ColumnPostCard
-import com.example.myinsta.common.Constants
 import com.example.myinsta.common.Constants.TAG
 import com.example.myinsta.components.BottomNavigation
 import com.example.myinsta.components.TopBar
 import com.example.myinsta.components.UnseenStoryIcon
-import com.example.myinsta.presentation.feedScreen.addCommentScreen.CommentItem
 import com.example.navapp.Screens
 
 @SuppressLint("StateFlowValueCalledInComposition")
@@ -110,6 +107,7 @@ fun FeedScreen(
                     }
                 }
             }
+            CircularProgressBar(isDisplayed = isLoading)
         }
     }
 }

@@ -25,20 +25,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.example.myinsta.R
+import com.example.myinsta.common.ButtonWithLoader
 import com.example.myinsta.common.Constants.DEFAULT_User_IMAGE
 import com.example.myinsta.common.Constants.TAG
 import com.example.myinsta.common.loadPicture
-import com.example.myinsta.components.MyButton
 import com.example.myinsta.components.UsernameOrEmailTextField
 import com.example.myinsta.presentation.addPostScreen.AddPostViewModel
-import com.example.myinsta.presentation.profileScreen.ProfileScreenViewModel
-import com.example.myinsta.presentation.profileScreen.components.RoundedImageView
-import com.example.myinsta.presentation.registerScreen.RegisterScreenViewModel
 import com.example.myinsta.response.Resource
 import com.example.myinsta.ui.theme.QuickSandTypography
 import com.example.navapp.Screens
@@ -54,6 +49,7 @@ fun ConfirmPostScreen(
     val userId by viewModel.userId.collectAsStateWithLifecycle()
     val userInfo by viewModel.userInfo.collectAsStateWithLifecycle()
     var username: String = ""
+    val loading = viewModel.loading.value
 
     LaunchedEffect(key1 = userId, block = {
         viewModel.getUserInfo(userId!!)
@@ -122,13 +118,13 @@ fun ConfirmPostScreen(
             onQueryChanged = { viewModel.onCaptionChanged(it) },
             isError = false,
         )
-        MyButton(text = "Share") {
+        ButtonWithLoader(buttonText = "Share",loading) {
             viewModel
                 .createPost(
                     postDescription = caption,
                     userId = userId!!,
                     userName = username,
-                    imageUrl =  imagePath
+                    imageUrl = imagePath
                 )
         }
     }
