@@ -1,8 +1,6 @@
 package com.example.myinsta.useCases
 
-import android.content.Context
-import com.example.myinsta.repository.FirebaseRepo.FirebaseRepository
-import dagger.hilt.android.qualifiers.ApplicationContext
+import com.example.myinsta.repository.firebaseRepo.FirebaseRepository
 import javax.inject.Inject
 
 class FirebaseFollowUser  @Inject constructor(

@@ -1,6 +1,6 @@
 package com.example.myinsta.useCases
 
-import com.example.myinsta.repository.FirebaseRepo.FirebaseRepository
+import com.example.myinsta.repository.firebaseRepo.FirebaseRepository
 import javax.inject.Inject
 
 class FirebaseAddCommentUseCase @Inject constructor(

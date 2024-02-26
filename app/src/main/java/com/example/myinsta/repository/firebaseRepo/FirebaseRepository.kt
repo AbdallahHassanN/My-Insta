@@ -1,6 +1,5 @@
-package com.example.myinsta.repository.FirebaseRepo
+package com.example.myinsta.repository.firebaseRepo
 
-import android.net.Uri
 import com.example.myinsta.models.Comment
 import com.example.myinsta.models.Post
 import com.example.myinsta.models.User

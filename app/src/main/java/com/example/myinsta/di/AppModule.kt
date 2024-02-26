@@ -3,10 +3,12 @@ package com.example.myinsta.di
 import android.content.Context
 import com.example.myinsta.BaseApplication
 import com.example.myinsta.common.Constants.BASE_URL
-import com.example.myinsta.repository.FirebaseRepo.FirebaseRepository
-import com.example.myinsta.repository.FirebaseRepo.FirebaseRepositoryImpl
+import com.example.myinsta.repository.firebaseRepo.FirebaseRepository
+import com.example.myinsta.repository.firebaseRepo.FirebaseRepositoryImpl
 import com.example.myinsta.repository.authRepo.AuthRepository
 import com.example.myinsta.repository.authRepo.AuthRepositoryImpl
+import com.example.myinsta.repository.chatRepo.ChatRepository
+import com.example.myinsta.repository.chatRepo.ChatRepositoryImpl
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -31,13 +33,6 @@ object AppModule {
     fun provideFirebaseAuth()
     : FirebaseAuth = FirebaseAuth.getInstance()
 
-    /*@Singleton
-    @Provides
-    fun providesAuthRepository(
-        impl: AuthRepositoryImpl,
-        @ApplicationContext appContext: Context // Use @ApplicationContext to get the application context
-    )
-    : AuthRepository = impl*/
     @Singleton
     @Provides
     fun providesAuthRepository(
@@ -68,6 +63,12 @@ object AppModule {
             firebaseStorage,
             appContext
         )
+    }
+
+    @Singleton
+    @Provides
+    fun provideChatRepository(firestore: FirebaseFirestore): ChatRepository {
+        return ChatRepositoryImpl(firestore)
     }
 
     @Singleton

@@ -34,7 +34,7 @@ import com.example.navapp.Screens
 
 @Composable
 fun UserScreen(
-    id: String,
+    userId: String,
     navController: NavController
 ) {
     val viewModel: UserScreenViewModel = hiltViewModel()
@@ -43,7 +43,7 @@ fun UserScreen(
     val postsList by viewModel.postsList.collectAsStateWithLifecycle()
     val loading = viewModel.loading.value
 
-    var btnState:Boolean = false
+    var btnState: Boolean = false
     var username: String = ""
     var fullName: String = ""
     var bio: String = ""
@@ -52,8 +52,8 @@ fun UserScreen(
     var following: Int = 0
     var posts: Int = 0
 
-    LaunchedEffect(key1 = id, block = {
-        viewModel.getFlows(id)
+    LaunchedEffect(key1 = userId, block = {
+        viewModel.getFlows(userId)
     })
     if (userInfo != null) {
         username = userInfo!!.username
@@ -63,10 +63,10 @@ fun UserScreen(
         following = userInfo!!.following
         posts = userInfo!!.totalPosts
         img = userInfo!!.imageUrl
-        btnState = if(userInfo!!.followersList.contains(currentUserId)){
+        btnState = if (userInfo!!.followersList.contains(currentUserId)) {
             viewModel.changeToFollowState()
             true
-        }else{
+        } else {
             viewModel.changeToUnfollowState()
             false
         }
@@ -108,13 +108,13 @@ fun UserScreen(
                     numberText = followers.toString(),
                     text = "Followers"
                 ) {
-                    navController.navigate(Screens.FollowersListScreen.withArgs(id))
+                    navController.navigate(Screens.FollowersListScreen.withArgs(userId))
                 }
                 ProfileStates(
                     numberText = following.toString(),
                     text = "Following"
                 ) {
-                    navController.navigate(Screens.FollowingListScreen.withArgs(id))
+                    navController.navigate(Screens.FollowingListScreen.withArgs(userId))
                 }
             }
         }
@@ -141,16 +141,48 @@ fun UserScreen(
                     modifier = Modifier.padding(end = 5.dp),
                     colors = ButtonDefaults
                         .buttonColors(
-                        containerColor =
-                        if (btnState) Color.Green else Color.Blue
-                    ),
+                            containerColor = Color.Blue
+                        ),
                     onClick = {
-                        btnState = if(!(userInfo!!.followersList.contains(currentUserId))){
-                            viewModel.followUser(id)
+                        val roomId = (userInfo!!.id + currentUserId).toCharArray().sorted()
+                            .joinToString("")
+                        val id = userInfo!!.id
+                        navController.navigate("${Screens.ChatScreen.route}/$roomId/$id") {
+                            launchSingleTop = true
+                        }
+
+                        /*val id =
+                            (userInfo!!.id + currentUserId)
+                                .toCharArray().sorted().joinToString("")
+                        val json = Gson().toJson(
+                            ChatUserList(
+                                id = id,
+                                friendUsername = userInfo!!.username,
+                                imgUrl = userInfo!!.imageUrl
+                            )
+                        )
+                        navController.navigate("${Screens.ChatScreen.route}/$json")*/
+                    }
+                ) {
+                    Text(
+                        text = "Message",
+                        fontSize = 16.sp
+                    )
+                }
+                Button(
+                    modifier = Modifier.padding(end = 5.dp),
+                    colors = ButtonDefaults
+                        .buttonColors(
+                            containerColor =
+                            if (btnState) Color.Green else Color.Blue
+                        ),
+                    onClick = {
+                        btnState = if (!(userInfo!!.followersList.contains(currentUserId))) {
+                            viewModel.followUser(userId)
                             viewModel.changeToFollowState()
                             true
-                        }else{
-                            viewModel.unfollowUser(id)
+                        } else {
+                            viewModel.unfollowUser(userId)
                             viewModel.changeToUnfollowState()
                             false
                         }

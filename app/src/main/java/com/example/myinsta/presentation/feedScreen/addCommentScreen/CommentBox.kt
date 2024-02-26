@@ -32,7 +32,8 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun CommentBox(
     modifier: Modifier,
-    onSendClick: (String) -> Unit
+    label:String,
+    onSendClick: (String) -> Unit,
 ) {
     var chatBoxValue by remember { mutableStateOf(TextFieldValue("")) }
         Row(
@@ -57,7 +58,7 @@ fun CommentBox(
                     disabledIndicatorColor = Color.Transparent,
                 ),
                 placeholder = {
-                    Text(text = "Share Your Thoughts")
+                    Text(text = label)
                 }
             )
             IconButton(

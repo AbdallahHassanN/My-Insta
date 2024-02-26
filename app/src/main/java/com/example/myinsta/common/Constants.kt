@@ -19,5 +19,17 @@ object Constants {
     const val COLLECTION_POSTS = "posts"
     const val COLLECTION_COMMENTS = "comments"
     const val COLLECTION_LIKES = "likes"
+    const val COLLECTION_CHATS = "chats"
+    const val COLLECTION_MESSAGES = "messages"
+    const val CHAT_PATH= "chatPath"
+
+
+    const val CONTENT = "content"
+    const val CREATED_AT = "createdAt"
+    const val LAST_MESSAGE_TIME = "lastMessageTime"
+    const val LAST_MESSAGE = "lastMessage"
+    const val SENDER_ID= "senderId"
+    const val SENDER_NAME = "senderName"
+    const val CHAT_ID = "chatId"
 
 }

@@ -89,7 +89,8 @@ fun AddCommentScreen(
                         CommentBox(
                             modifier = Modifier
                                 .align(Alignment.BottomCenter)
-                                .fillMaxWidth()
+                                .fillMaxWidth(),
+                            label = "Share Your Thoughts"
                         ) { comment ->
                             postData.let {
                                 viewModel.addComment(

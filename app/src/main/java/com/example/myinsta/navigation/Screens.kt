@@ -13,6 +13,7 @@ sealed class Screens(val route:String) {
     object ChangeBioScreen : Screens("ChangeBioScreen")
 
     object NotificationScreen:Screens("NotificationScreen")
+    object ChatListScreen:Screens("ChatListScreen")
     object ChatScreen:Screens("ChatScreen")
 
     object UserScreen:Screens("UserScreen")

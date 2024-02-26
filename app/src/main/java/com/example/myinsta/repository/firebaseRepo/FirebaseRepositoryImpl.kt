@@ -1,10 +1,9 @@
-package com.example.myinsta.repository.FirebaseRepo
+package com.example.myinsta.repository.firebaseRepo
 
 import android.content.Context
 import android.net.Uri
 import android.util.Log
 import androidx.core.net.toUri
-import com.example.myinsta.common.Constants
 import com.example.myinsta.common.Constants.COLLECTION_COMMENTS
 import com.example.myinsta.common.Constants.COLLECTION_LIKES
 import com.example.myinsta.common.Constants.COLLECTION_USERS
@@ -67,31 +66,7 @@ class FirebaseRepositoryImpl @Inject constructor(
                 } else {
                     Resource.Error(it.message ?: ERROR)
                 }
-            }/*=
-    callbackFlow {
-        try {
-            fireStore.collection(COLLECTION_USERS)
-                .whereGreaterThanOrEqualTo("fullName", name)
-                .whereLessThanOrEqualTo("fullName", "${name}\uF7FF")
-                .get()
-                .addOnSuccessListener { querySnapshot ->
-                    val users = querySnapshot
-                        .documents
-                        .mapNotNull { documentSnapshot ->
-                            documentSnapshot.toObject(User::class.java)
-                        }
-                        // Exclude current user
-                        .filter { user -> user.id != firebaseAuth.currentUser!!.uid }
-                    trySend(Resource.Success(data = users))
-                }
-                .addOnFailureListener { e ->
-                    trySend(Resource.Error(e.message ?: ERROR))
-                }
-        } catch (e: Exception) {
-            trySend(Resource.Error(message = e.localizedMessage ?: ERROR))
-        }
-        awaitClose()
-    }*/
+            }
 
     override fun followUser(id: String): Flow<Resource<Boolean>> = callbackFlow {
         firebaseAuth.currentUser?.let { user ->

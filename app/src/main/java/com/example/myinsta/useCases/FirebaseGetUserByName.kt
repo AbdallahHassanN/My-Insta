@@ -3,7 +3,7 @@ package com.example.myinsta.useCases
 import android.content.Context
 import android.util.Log
 import com.example.myinsta.common.Constants
-import com.example.myinsta.repository.FirebaseRepo.FirebaseRepository
+import com.example.myinsta.repository.firebaseRepo.FirebaseRepository
 import com.example.myinsta.response.Resource
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.flatMapConcat

@@ -35,7 +35,6 @@ fun FeedScreen(
     val viewModel: FeedScreenViewModel = hiltViewModel()
     val posts by viewModel.postsList.collectAsStateWithLifecycle()
     val currentUserId by viewModel.currentUserId.collectAsStateWithLifecycle()
-    val postData by viewModel.postData.collectAsStateWithLifecycle()
     val userInfo by viewModel.userInfo.collectAsStateWithLifecycle()
     val isLoading by viewModel.loading.collectAsState()
 
@@ -48,11 +47,6 @@ fun FeedScreen(
             viewModel.getInfoByUserInfo(post!!.userId)
         }
     }
-
-    Log.d(TAG, "postss $posts")
-    Log.d(TAG, "posts $postData")
-
-
     Scaffold(
         topBar = { TopBar(navController = navController) },
         bottomBar = { BottomNavigation(navController = navController) }

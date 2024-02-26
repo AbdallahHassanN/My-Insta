@@ -15,20 +15,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.myinsta.ui.theme.QuickSandTypography
 import com.example.navapp.Screens
 
 @Composable
-fun TopBar(navController: NavController){
+fun TopBar(
+    navController: NavController
+) {
     Surface(
         modifier = Modifier
             .fillMaxWidth(),
-        color = Color.White ,
+        color = Color.White,
     ) {
         Column {
             Row(
@@ -46,30 +46,29 @@ fun TopBar(navController: NavController){
                     style = QuickSandTypography.titleLarge
                 )
 
-                IconButton(onClick = {
-                   navController.navigate(Screens.NotificationScreen.route)
-                },
-                    ) {
-                    Icon(imageVector = Icons.Filled.FavoriteBorder,
-                        contentDescription = "Search",
-                        tint = Color.Black)
-                }
-                IconButton(onClick = {
-                    navController.navigate(Screens.ChatScreen.route)
-                },
+                IconButton(
+                    onClick = {
+                        navController.navigate(Screens.NotificationScreen.route)
+                    },
                 ) {
-                    Icon(imageVector = Icons.Filled.MailOutline,
+                    Icon(
+                        imageVector = Icons.Filled.FavoriteBorder,
                         contentDescription = "Search",
-                        tint = Color.Black)
+                        tint = Color.Black
+                    )
+                }
+                IconButton(
+                    onClick = {
+                        navController.navigate(Screens.ChatListScreen.route)
+                    },
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.MailOutline,
+                        contentDescription = "Search",
+                        tint = Color.Black
+                    )
                 }
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DisplayTopBar() {
-    val navController = rememberNavController()
-    TopBar(navController)
 }
